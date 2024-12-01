@@ -1,8 +1,7 @@
 use std::{collections::HashMap, fs, iter::zip};
 
 fn main() {
-    let puzzle = fs::read_to_string("day01.txt").
-        expect("puzzle input");
+    let puzzle = fs::read_to_string("day01.txt").unwrap();
     println!("Part 1: {}", part1(&puzzle));
     println!("Part 2: {}", part2(&puzzle));
 }
@@ -14,8 +13,8 @@ fn parse(x: &str) -> (Vec<i32>, Vec<i32>) {
     loop {
         match (iterator.next(), iterator.next()) {
             (Some(i), Some(j)) => {
-                list1.push(i.parse::<i32>().unwrap());
-                list2.push(j.parse::<i32>().unwrap());
+                list1.push(i.parse().unwrap());
+                list2.push(j.parse().unwrap());
             },
             _ => break
         }
@@ -41,8 +40,15 @@ fn tally(v: &Vec<i32>) -> HashMap<i32, i32> {
 fn part2(x: &str) -> i32 {
     let (list1, list2) = parse(x);
     let h = tally(&list2);
-    list1.iter().fold(0, |mut acc, &x| {
-        acc += x * (*h.get(&x).unwrap_or(&0)); // yuck.
+    list1.iter().fold(0, |mut acc, x| {
+        // I prefer the match arms over HashMap.get().unwrap_or() because of
+        // all those tricky pointers in the one-liner.
+        let y = match h.get(x) {
+            Some(&y) => y,
+            None => 0
+        };
+        acc += x * y;
+        //acc += x * (*h.get(&x).unwrap_or(&0)); // yuck.
         acc
     })
 }
