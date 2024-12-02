@@ -1,7 +1,7 @@
 use std::{fs, iter::zip};
 
 fn main() {
-    let puzzle = fs::read_to_string("day02.txt").unwrap();
+    let puzzle = fs::read_to_string("puzzles/day02.txt").unwrap();
     let p = parse(&puzzle.trim());
     println!("Part 1: {}", part1(&p));
     println!("Part 2: {}", part2_so_annoyed(&p));
