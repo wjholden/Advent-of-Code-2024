@@ -54,7 +54,7 @@ fn part2(x: &str) -> i32 {
 }
 
 #[cfg(test)]
-mod tests {
+mod day01 {
     use std::assert_eq;
 
     use super::*;

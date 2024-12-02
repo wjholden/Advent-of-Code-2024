@@ -1,10 +1,10 @@
-use std::fs;
+use std::{fs, iter::zip};
 
 fn main() {
     let puzzle = fs::read_to_string("day02.txt").unwrap();
     let p = parse(&puzzle.trim());
-    println!("Part 1: {}", part1(&p, false));
-    println!("Part 2: {}", part1(&p, true));
+    println!("Part 1: {}", part1(&p));
+    println!("Part 2: {}", part2_so_annoyed(&p));
 }
 
 fn parse(input: &str) -> Vec<Vec<i32>> {
@@ -15,50 +15,43 @@ fn parse(input: &str) -> Vec<Vec<i32>> {
     }).collect()
 }
 
-fn part1(input: &Vec<Vec<i32>>, dampener: bool) -> i32 {
-    input.iter().fold(0, |acc, row| {
-        // slope also cannot be zero.
-        let slope = row.last().expect("last") - row.first().expect("first");
-        let mut faults = 0;
-        let mut damper_used = false;
-        for (i, &x) in row.iter().enumerate() {
-            if i == 0 {
-                continue; // skip first
-            }
-            // So many cases to consider in part 2!
-            if is_unsafe(slope, row[i-1], x) {
-                faults += 1;
-                
-                //println!("{:?} is unsafe at {} and {}", row, row[i-1], x);
-                if dampener && !damper_used {
-                    if i <= row.len() - 2 {
-                        if !is_unsafe(slope, row[i-1], row[i+1]) {
-                            damper_used = true
-                        }
-                    } else {
-                        damper_used = true
-                    }
-                }
-            }
-        }
-        
-        if faults == 0 {
-            acc + 1
-        } else if faults == 1 && damper_used {
-            acc + 1
-        } else {
-            acc
-        }
-    })
+fn is_pair_safe(slope: i32, x1: i32, x2: i32) -> bool {
+    let dr = x2 - x1;
+    !(slope * dr <= 0 || dr.abs() < 1 || dr.abs() > 3)
 }
 
-fn is_unsafe(slope: i32, x1: i32, x2: i32) -> bool {
-    let dr = x2 - x1;
-    slope * dr <= 0 || dr.abs() < 1 || dr.abs() > 3
+fn is_row_safe(row: &[i32]) -> bool {
+    let slope = row.last().expect("last") - row.first().expect("first");
+    for (&x1,&x2) in zip(&row[0..row.len()-1], &row[1..]) {
+        if !is_pair_safe(slope, x1, x2) {
+            return false
+        }
+    }
+    true
+}
+
+fn part1(input: &Vec<Vec<i32>>) -> usize {
+    input.iter().filter(|&row| is_row_safe(row)).count()
+}
+
+// Geez. The stupid approach actually works. What's that thing they say about
+// premature optimization?
+fn part2_so_annoyed(input: &Vec<Vec<i32>>) -> usize {
+    input.iter().filter(|&row| {
+        for i in 0..row.len() {
+            let left = &row[..i];
+            let right = &row[i+1..];
+            let row_minus_one = [left,right].concat();
+            if is_row_safe(&row_minus_one) {
+                return true
+            }
+        }
+        false
+    }).count()
 }
 
 #[cfg(test)]
-mod tests {
+mod day02 {
     use std::assert_eq;
 
     use super::*;
@@ -73,12 +66,12 @@ mod tests {
     #[test]
     fn test1() {
         let s = parse(SAMPLE);
-        assert_eq!(part1(&s, false), 2)
+        assert_eq!(part1(&s), 2)
     }
- 
+
     #[test]
     fn test2() {
         let s = parse(SAMPLE);
-        assert_eq!(part1(&s, true), 4)
-    }   
+        assert_eq!(part2_so_annoyed(&s), 4)
+    }
 }

@@ -8,7 +8,7 @@ fn main() {
 }
 
 #[cfg(test)]
-mod day_xx {
+mod dayxx {
     //use std::assert_eq;
 
     //use super::*;
