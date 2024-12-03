@@ -15,7 +15,8 @@ by Donovan and Kernighan and it was very helpful.
 # Daily Themes and Stars
 
 1. `**` programming basics: parsing input, loops, sorting...this is day 1?
-2. `**` corner cases, refactoring, premature optimization, tests
+2. `**` corner cases, refactoring, premature optimization, tests, $O(8) = O(1)$
+3. `**` regular expressions, reading the instructions (example 2 is not the same as example 1)
 
 # Lessons Learned
 
@@ -23,3 +24,5 @@ by Donovan and Kernighan and it was very helpful.
 * Sprinkle `&` on [closure parameters](https://doc.rust-lang.org/rust-by-example/fn/closures/closure_examples/iter_any.html) to make them more comfortable to use.
 * Use `&[T]` instead of `Vec<T>` as [function arguments](https://users.rust-lang.org/t/when-does-one-use-slices-as-arguments/89499).
 * `count()` might not do what you expect. Did you mean `len()`? You might need to collect the iterator into a collection.
+* `filter_map()` makes clever use of optionals to combine filter and map. It composes nicely with `match`.
+
