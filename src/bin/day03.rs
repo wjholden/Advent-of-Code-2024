@@ -17,18 +17,18 @@ fn part1(input: &str) -> i32 {
 }
 
 fn part2(input: &str) -> i32 {
-    //let re = Regex::new(r"(?P<off>don't\(\))|(?P<on>do\(\))|mul\((?P<x>\d+),(?P<y>\d+)\)").unwrap();
     let re = Regex::new(r"(?P<state>don't\(\)|do\(\))|mul\((?P<x>\d+),(?P<y>\d+)\)").unwrap();
     let mut mul_on = true;
     re.captures_iter(input).filter_map(|cap| {
         let group = (cap.name("state"), cap.name("x"), cap.name("y"));
         match group {
-            (None, Some(x), Some(y)) if mul_on => Some((x.as_str().parse::<i32>().unwrap(), y.as_str().parse::<i32>().unwrap())),
+            (None, Some(x), Some(y)) if mul_on => 
+                Some((x.as_str().parse::<i32>().unwrap(), y.as_str().parse::<i32>().unwrap())),
             (Some(state), ..) => {
                 mul_on = state.as_str() == "do()";
                 None
             },
-            _ => None, // mul_on must be off. Ignore this mul(x,y) instruction.
+            _ => None, // multiplication must be turned off. Ignore this mul(x,y) instruction.
         }
     }).map(|(x,y)| x * y).sum()
 }
