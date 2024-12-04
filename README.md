@@ -27,3 +27,7 @@ by Donovan and Kernighan and it was very helpful.
 * `count()` might not do what you expect. Did you mean `len()`? You might need to collect the iterator into a collection.
 * `filter_map()` makes clever use of optionals to combine filter and map. It composes nicely with `match`.
 * Rust regex doesn't support lookahead (`?=`). Might have been useful for day 4.
+* `Vec<Vec<char>>` sorta works for 2D strings, but it isn't as clean as you'd like.
+* Rust apparently has no try/catch.
+There isn't a great way to backtrack from array accesses with yolo bound checks.
+I think you could avoid the panic with `get`, but this didn't work with my `Vec<Vec<_>>`.
