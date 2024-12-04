@@ -17,6 +17,7 @@ by Donovan and Kernighan and it was very helpful.
 1. `**` programming basics: parsing input, loops, sorting...this is day 1?
 2. `**` corner cases, refactoring, premature optimization, tests, $O(8) = O(1)$
 3. `**` regular expressions, reading the instructions (example 2 is not the same as example 1)
+4. `**` 2D arrays, bounds, regex doesn't work, graph traversal
 
 # Lessons Learned
 
@@ -25,4 +26,4 @@ by Donovan and Kernighan and it was very helpful.
 * Use `&[T]` instead of `Vec<T>` as [function arguments](https://users.rust-lang.org/t/when-does-one-use-slices-as-arguments/89499).
 * `count()` might not do what you expect. Did you mean `len()`? You might need to collect the iterator into a collection.
 * `filter_map()` makes clever use of optionals to combine filter and map. It composes nicely with `match`.
-
+* Rust regex doesn't support lookahead (`?=`). Might have been useful for day 4.
