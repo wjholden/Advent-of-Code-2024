@@ -31,3 +31,10 @@ by Donovan and Kernighan and it was very helpful.
 * Rust apparently has no try/catch.
 There isn't a great way to backtrack from array accesses with yolo bound checks.
 I think you could avoid the panic with `get`, but this didn't work with my `Vec<Vec<_>>`.
+A hashmap might have been much easier than nested vectors.
+
+# References
+
+* [Rust Book](https://doc.rust-lang.org/book/)
+* [Rust by Example](https://doc.rust-lang.org/rust-by-example/)
+* [A Gentle Introduction To Rust](https://stevedonovan.github.io/rust-gentle-intro/)
