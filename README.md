@@ -19,6 +19,7 @@ by Donovan and Kernighan and it was very helpful.
 3. `**` regular expressions, reading the instructions (example 2 is not the same as example 1)
 4. `**` 2D arrays, bounds, regex doesn't work, graph traversal
 5. `**` sorting with custom comparators
+6. `**` object-oriented programming, order of operations, cycles, grids, why is this so slow?
 
 # Lessons Learned
 
@@ -35,6 +36,9 @@ I think you could avoid the panic with `get`, but this didn't work with my `Vec<
 A hashmap might have been much easier than nested vectors.
 * `is_sorted_by` and `sort_by` expect different comparison functions.
 `is_sorted_by` operates on booleans, `sort_by` uses `Ordering`.
+* Day 6 was difficult for me.
+I came up with an interesting solution (inspired by a Reddit comment) based on TTLs instead of keeping the path explored.
+It was a case where compute is faster than memory.
 
 # References
 

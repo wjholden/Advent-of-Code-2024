@@ -1,77 +1,82 @@
-use std::{collections::{HashMap, HashSet}, fs};
+use std::{
+    collections::{HashMap, HashSet},
+    fs,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 struct Guard {
-    x: i32,
-    y: i32,
-    dx: i32,
-    dy: i32,
+    x: i16,
+    y: i16,
+    dx: i16,
+    dy: i16,
 }
 
 trait Go {
     fn go(&mut self, world: &World) -> bool;
-    fn next(&self, world: &World) -> Option<(i32,i32)>;
+    fn next(&self) -> (i16, i16);
+    fn turn(&mut self);
 }
 
 enum MapElement {
     Empty,
-    Obstruction
+    Obstruction,
 }
 
-type World = HashMap<(i32,i32), MapElement>;
+type World = HashMap<(i16, i16), MapElement>;
 
 impl Go for Guard {
     fn go(&mut self, world: &World) -> bool {
-        match world.get(&(self.x + self.dx, self.y + self.dy)) {
+        match world.get(&self.next()) {
             Some(MapElement::Empty) => {
                 self.x += self.dx;
                 self.y += self.dy;
                 true
-            },
+            }
             Some(MapElement::Obstruction) => {
-                // https://wjholden.com/advent-of-code-2017-day22-part1.pdf
-                // Switch negative signs to change direction.
-                (self.dx, self.dy) = (-self.dy, self.dx);
-                assert!((self.dx,self.dy) == (0,1) ||
-                    (self.dx,self.dy) == (0,-1) ||
-                    (self.dx,self.dy) == (1,0) ||
-                    (self.dx,self.dy) == (-1,0));
-                self.x += self.dx;
-                self.y += self.dy;
+                self.turn();
                 true
             }
-            None => false
+            None => false,
         }
     }
 
-    fn next(&self, world: &World) -> Option<(i32,i32)> {
-        match world.get(&(self.x + self.dx, self.y + self.dy)) {
-            Some(MapElement::Empty) => Some((self.x + self.dx, self.y + self.dy)),
-            Some(MapElement::Obstruction) => Some((self.x - self.dy, self.y + self.dx)),
-            None => None
-        }
+    fn next(&self) -> (i16, i16) {
+        (self.x + self.dx, self.y + self.dy)
+    }
+
+    fn turn(&mut self) {
+        // https://wjholden.com/advent-of-code-2017-day22-part1.pdf
+        // Switch negative signs to invert (-y is up, +y is down).
+        (self.dx, self.dy) = (-self.dy, self.dx);
+        assert!(
+            (self.dx, self.dy) == (0, 1)
+                || (self.dx, self.dy) == (0, -1)
+                || (self.dx, self.dy) == (1, 0)
+                || (self.dx, self.dy) == (-1, 0)
+        );
     }
 }
 
-fn show(world: &World, guard: &Guard, max_x: i32, max_y: i32) -> String {
+#[allow(dead_code)]
+fn show(world: &World, guard: &Guard, max_x: i16, max_y: i16) -> String {
     let mut s = String::new();
-    (0..max_y).for_each(|y| {
-        (0..max_x).for_each(|x| {
+    (0..=max_y).for_each(|y| {
+        (0..=max_x).for_each(|x| {
             if guard.x == x && guard.y == y {
                 s.push(match (guard.dx, guard.dy) {
-                    (0,1) => 'v',
-                    (0,-1) => '^',
-                    (1,0) => '>',
-                    (-1,0) => '<',
-                    _ => panic!("unexpected guard direction")
+                    (0, -1) => '^',
+                    (1, 0) => '>',
+                    (0, 1) => 'v',
+                    (-1, 0) => '<',
+                    _ => panic!("unexpected guard direction"),
                 });
             } else {
-                s.push(match world.get(&(x,y)).expect("map element in world") {
+                s.push(match world.get(&(x, y)).expect("map element in world") {
                     MapElement::Empty => '.',
-                    MapElement::Obstruction => '#'
+                    MapElement::Obstruction => '#',
                 });
             }
-        });    
+        });
         s.push('\n');
     });
     s
@@ -79,79 +84,112 @@ fn show(world: &World, guard: &Guard, max_x: i32, max_y: i32) -> String {
 
 fn main() {
     let puzzle = fs::read_to_string("puzzles/day06.txt").unwrap();
-    //println!("{}", puzzle);
-    let result = part1(&puzzle);
+    let result = solve(&puzzle);
     println!("Part 1: {}", result.0);
-    println!("Part 2: {}", result.1); // 2226 too high
+    println!("Part 2: {}", result.1);
 }
 
-fn part1(input: &str) -> (usize, usize) {
+fn solve(input: &str) -> (usize, usize) {
     let mut max_x = 0;
     let mut max_y = 0;
-    let mut guard = Guard{ x: 0, y: 0, dx: 0, dy: -1 };
+    let mut guard = Guard {
+        x: 0,
+        y: 0,
+        dx: 0,
+        dy: -1,
+    };
     let mut world = World::new();
-    input.trim().split_whitespace().enumerate().for_each(|(y, line)| {
-        line.char_indices().for_each(|(x,c)| {
-            max_x = max_x.max(x);
-            max_y = max_y.max(y);
-            world.insert((x as i32, y as i32), match c {
-                '.' => MapElement::Empty,
-                '#' => MapElement::Obstruction,
-                '^' => {
-                    guard.x = x as i32;
-                    guard.y = y as i32;
-                    MapElement::Empty
-                },
-                _ => panic!("unexpected input")
+    input
+        .trim()
+        .split_whitespace()
+        .enumerate()
+        .for_each(|(y, line)| {
+            line.char_indices().for_each(|(x, c)| {
+                max_x = max_x.max(x as i16);
+                max_y = max_y.max(y as i16);
+                world.insert(
+                    (x as i16, y as i16),
+                    match c {
+                        '.' => MapElement::Empty,
+                        '#' => MapElement::Obstruction,
+                        '^' => {
+                            guard.x = x as i16;
+                            guard.y = y as i16;
+                            MapElement::Empty
+                        }
+                        _ => unreachable!("the world should only contain symbols: .#^"),
+                    },
+                );
             });
         });
-    });
 
-    let mut visited: HashSet<(i32,i32)> = HashSet::new();
-    let mut part2 = 0;
-    //println!("{}", show(&world, &guard, max_x as i32, max_y as i32));
+    let mut visited: HashSet<(i16, i16)> = HashSet::new();
+    let mut part2: HashSet<(i16, i16)> = HashSet::new();
+    let guard_initial = (guard.x, guard.y);
+    visited.insert(guard_initial);
+
     loop {
-        //println!("Tick. Guard: {:?}", guard);
-        //println!("{}", show(&world, &guard, max_x as i32, max_y as i32));
-
         // Part 2: try finding a cycle
-        if let Some(next) = guard.next(&world) {
+        let next = guard.next();
+        if next != guard_initial && !part2.contains(&next) {
             match world.get(&next) {
                 Some(MapElement::Empty) => {
                     world.insert(next, MapElement::Obstruction);
-                    if is_cyclic(&world, &guard) {
-                        part2 += 1;
+                    if is_cyclic_ttl(&world, guard_initial.0, guard_initial.1) {
+                        part2.insert(next);
                     }
                     world.insert(next, MapElement::Empty);
-                },
-                Some(MapElement::Obstruction) => println!("yes, this happens (it never happens)"),
-                None => println!("this also happens (it doesn't actually happen)"),
+                }
+                _ => (),
             }
         }
-        
+
         // Part 1
         if guard.go(&world) {
             visited.insert((guard.x, guard.y));
         } else {
-            break
+            break;
         }
     }
-    (visited.len(), part2)
+
+    (visited.len(), part2.len())
 }
 
-fn is_cyclic(world: &World, guard: &Guard) -> bool {
-    let mut g2 = guard.clone();
-    let mut path: HashSet<Guard> = HashSet::new();
-
+#[allow(dead_code)]
+fn is_cyclic(world: &World, xi: i16, yi: i16) -> bool {
+    let mut guard = Guard {
+        x: xi,
+        y: yi,
+        dx: 0,
+        dy: -1,
+    };    let mut path: HashSet<Guard> = HashSet::new();
     loop {
-        if path.contains(&g2) {
-            return true
+        if path.insert(guard.clone()) == false {
+            return true;
         }
-        path.insert(g2.clone());
-        if g2.go(world) == false {
-            return false
+        if guard.go(world) == false {
+            return false;
         }
     }
+}
+
+// You wouldn't think this would be faster, but you save so much copying and hashing
+// that just letting the CPU go brr is better.
+fn is_cyclic_ttl(world: &World, xi: i16, yi: i16) -> bool {
+    let mut guard = Guard {
+        x: xi,
+        y: yi,
+        dx: 0,
+        dy: -1,
+    };
+    let mut steps = 0;
+    while steps < world.len()/2 {
+        if guard.go(world) == false {
+            return false;
+        }
+        steps += 1;
+    }
+    true
 }
 
 #[cfg(test)]
@@ -171,13 +209,33 @@ mod day06 {
 #.........
 ......#...";
 
+    // https://www.reddit.com/r/adventofcode/comments/1h81nc0/comment/m0ppjcy/
+    const S2: &str = "..........
+....#.....
+........#.
+..........
+....^.....
+...#......
+....#.....
+..........
+...#......
+..........
+..#.......
+......##..
+..........";
+
     #[test]
     fn test1() {
-        assert_eq!(part1(SAMPLE).0, 41)
+        assert_eq!(solve(SAMPLE).0, 41)
     }
- 
+
     #[test]
     fn test2() {
-        assert_eq!(part1(SAMPLE).1, 6)
-    }   
+        assert_eq!(solve(SAMPLE).1, 6)
+    }
+
+    #[test]
+    fn test3() {
+        assert_eq!(solve(S2).1, 3)
+    }
 }
