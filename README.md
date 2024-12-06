@@ -18,6 +18,7 @@ by Donovan and Kernighan and it was very helpful.
 2. `**` corner cases, refactoring, premature optimization, tests, $O(8) = O(1)$
 3. `**` regular expressions, reading the instructions (example 2 is not the same as example 1)
 4. `**` 2D arrays, bounds, regex doesn't work, graph traversal
+5. `**` sorting with custom comparators
 
 # Lessons Learned
 
@@ -32,6 +33,8 @@ by Donovan and Kernighan and it was very helpful.
 There isn't a great way to backtrack from array accesses with yolo bound checks.
 I think you could avoid the panic with `get`, but this didn't work with my `Vec<Vec<_>>`.
 A hashmap might have been much easier than nested vectors.
+* `is_sorted_by` and `sort_by` expect different comparison functions.
+`is_sorted_by` operates on booleans, `sort_by` uses `Ordering`.
 
 # References
 

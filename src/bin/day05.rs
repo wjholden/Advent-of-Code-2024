@@ -11,7 +11,7 @@ fn main() {
     println!("Part 2: {}", p2);
 }
 
-fn parse(input: &str) -> (HashMap<(u64,u64), Ordering>,Vec<&str>) {
+fn parse(input: &str) -> (HashMap<(u16,u16), Ordering>,Vec<&str>) {
     let s: Vec<&str> = input.trim().split("\n\n").collect();
 
     let re = Regex::new(r"(?P<x>\d{2})\|(?P<y>\d{2})").unwrap();
@@ -30,13 +30,13 @@ fn parse(input: &str) -> (HashMap<(u64,u64), Ordering>,Vec<&str>) {
     (rules, updates)
 }
 
-fn solve(input: &str) -> (u64,u64) {
+fn solve(input: &str) -> (u16,u16) {
     let (rules, updates) = parse(input);
 
     let mut middle_page_sum1 = 0;
     let mut middle_page_sum2 = 0;
     for update in updates {
-        let mut pages: Vec<u64> = update.split(",").map(|e| e.parse().unwrap()).collect();
+        let mut pages: Vec<u16> = update.split(",").map(|e| e.parse().unwrap()).collect();
         let comparator = |&a,&b| *rules.get(&(a,b)).unwrap() == Ordering::Less;
 
         if pages.is_sorted_by(comparator) {
