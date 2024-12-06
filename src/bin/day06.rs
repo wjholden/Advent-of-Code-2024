@@ -183,7 +183,7 @@ fn is_cyclic_ttl(world: &World, xi: i16, yi: i16) -> bool {
         dy: -1,
     };
     let mut steps = 0;
-    while steps < world.len()/2 {
+    while steps < world.len() {
         if guard.go(world) == false {
             return false;
         }
