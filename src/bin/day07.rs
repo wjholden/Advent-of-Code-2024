@@ -1,4 +1,5 @@
-use std::{fs};
+use std::fs;
+use rayon::prelude::*;
 
 struct Calibration {
     res: u64,
@@ -7,42 +8,47 @@ struct Calibration {
 
 fn main() {
     let puzzle = fs::read_to_string("puzzles/day07.txt").unwrap();
-    println!("Part 1: {}", part1(&puzzle));
-    println!("Part 2: {}", part2(&puzzle));
+    let calibrations = parse(&puzzle);
+    println!("Part 1: {}", part1(&calibrations));
+    println!("Part 2: {}", part2(&calibrations));
 }
 
-fn part1(input: &str) -> u64 {
-    let calibrations = parse(input);
-    calibrations.iter().filter(|c| {
-        is_solvable1(0, &c.val, c.res)
+fn part1(calibrations: &[Calibration]) -> u64 {
+    calibrations.par_iter().filter(|c| {
+        is_solvable1(c.val[0], &c.val[1..], c.res)
     }).map(|c| c.res).sum()
 }
 
-fn part2(input: &str) -> u64 {
-    let calibrations = parse(input);
-    calibrations.iter().filter(|c| {
-        is_solvable2(0, &c.val, c.res)
+fn part2(calibrations: &[Calibration]) -> u64 {
+    calibrations.par_iter().filter(|c| {
+        is_solvable2(c.val[0], &c.val[1..], c.res)
     }).map(|c| c.res).sum()
 }
 
 fn is_solvable1(left: u64, right: &[u64], target: u64) -> bool {
     if right.len() == 0 {
         left == target
+    } else if left > target {
+        false
     } else {
         let current = right[0];
         is_solvable1(left + current, &right[1..], target) ||
-        is_solvable1(left.max(1) * current, &right[1..], target)
+        is_solvable1(left * current, &right[1..], target)
     }
 }
 
 fn is_solvable2(left: u64, right: &[u64], target: u64) -> bool {
     if right.len() == 0 {
         left == target
+    } else if left > target {
+        false // our operators only increase the value, so stop early if we've already overflowed  
     } else {
         let current = right[0];
-        let digits = 1 + (current as f64).log10().floor() as u32;
+        // https://www.reddit.com/r/adventofcode/comments/1h8l3z5/comment/m0vp3p7/
+        //let digits = 1 + (current as f64).log10().floor() as u32;
+        let digits = 1 + current.ilog10(); // WOW, this is a lot faster. 
         is_solvable2(left + current, &right[1..], target) ||
-        is_solvable2(left.max(1) * current, &right[1..], target) ||
+        is_solvable2(left * current, &right[1..], target) ||
         is_solvable2(left * 10u64.pow(digits) + current, &right[1..], target)
     }
 }
@@ -79,16 +85,16 @@ mod day07 {
 
     #[test]
     fn test1() {
-        assert_eq!(part1(SAMPLE), 3749)
+        assert_eq!(part1(&parse(SAMPLE)), 3749)
     }
  
     #[test]
     fn test2() {
-        assert_eq!(part2(SAMPLE), 11387)
+        assert_eq!(part2(&parse(SAMPLE)), 11387)
     }   
 
     #[test]
     fn test3() {
-        assert_eq!(part2("192: 17 8 14"), 192);
+        assert_eq!(part2(&parse("192: 17 8 14")), 192);
     }
 }

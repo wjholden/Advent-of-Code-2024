@@ -37,12 +37,16 @@ I think you could avoid the panic with `get`, but this didn't work with my `Vec<
 A hashmap might have been much easier than nested vectors.
 * `is_sorted_by` and `sort_by` expect different comparison functions.
 `is_sorted_by` operates on booleans, `sort_by` uses `Ordering`.
-* Day 6 was difficult for me.
-I came up with an interesting solution (inspired by a Reddit comment) based on TTLs instead of keeping the path explored.
-It was a case where compute is faster than memory.
+* Day 6 was difficult for me. I came up with an interesting solution
+([inspired by a Reddit comment](https://www.reddit.com/r/adventofcode/comments/1h7vpqi/comment/m0oxavw/))
+based on TTLs instead of keeping the path explored. It was a case where compute is faster than memory.
+* Someone else on [Reddit helped me with an extra test case](https://www.reddit.com/r/adventofcode/comments/1h81nc0/comment/m0ppjcy/).
+* `ilog` on integers is [much faster](https://www.reddit.com/r/adventofcode/comments/1h8l3z5/comment/m0vp3p7/) than casting to and from float types for logarithms.
 
 # References
 
 * [Rust Book](https://doc.rust-lang.org/book/)
 * [Rust by Example](https://doc.rust-lang.org/rust-by-example/)
 * [A Gentle Introduction To Rust](https://stevedonovan.github.io/rust-gentle-intro/)
+* [Back to the Building Blocks: A Path Toward Secure and Measurable Software](https://www.whitehouse.gov/wp-content/uploads/2024/02/Final-ONCD-Technical-Report.pdf)
+* [Response to the Office of the National Cyber Director's Request for Information on Open Source Software Security](https://www.regulations.gov/comment/ONCD-2023-0002-0045)
