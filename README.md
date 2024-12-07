@@ -20,6 +20,7 @@ by Donovan and Kernighan and it was very helpful.
 4. `**` 2D arrays, bounds, regex doesn't work, graph traversal
 5. `**` sorting with custom comparators
 6. `**` object-oriented programming, order of operations, cycles, grids, why is this so slow?
+7. `**` recursion, operator precedence, digit string concatenation, why is this so fast?
 
 # Lessons Learned
 
