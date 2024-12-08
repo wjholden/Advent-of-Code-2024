@@ -6,11 +6,15 @@ struct Calibration {
     val: Vec<u64>
 }
 
+// Why is this solution so much faster than mine? 
+// https://www.reddit.com/r/adventofcode/comments/1h8l3z5/comment/m0wq0ta/
 fn main() {
+    //let time = std::time::Instant::now();
     let puzzle = fs::read_to_string("puzzles/day07.txt").unwrap();
     let calibrations = parse(&puzzle);
     println!("Part 1: {}", part1(&calibrations));
     println!("Part 2: {}", part2(&calibrations));
+    //println!("Time: {:?}", time.elapsed());
 }
 
 fn part1(calibrations: &[Calibration]) -> u64 {
