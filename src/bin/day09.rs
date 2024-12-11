@@ -1,7 +1,7 @@
-use std::{fmt, fs};
+use std::fmt;
 
 fn main() {
-    let puzzle = fs::read_to_string("puzzles/day09.txt").unwrap();
+    let puzzle = std::fs::read_to_string("puzzles/day09.txt").unwrap();
     let mut disk = parse(&puzzle);
     println!("Part 1: {}", part1(&mut disk));
     println!("Part 2: {}", part2(&puzzle));
@@ -37,19 +37,6 @@ fn parse(input: &str) -> Disk {
     }).flatten().collect()
 }
 
-#[allow(dead_code)]
-fn print_disk(disk: Disk) {
-    for block in disk.iter() {
-        print!("{}", block)
-    }
-    println!()
-}
-
-#[allow(dead_code)]
-fn empty_block_count(disk: &[Block]) -> usize {
-    disk.iter().filter(|block| matches!(block, Block::Empty)).count()
-}
-
 fn checksum(disk: &[Block]) -> u64 {
     disk.iter().enumerate().filter_map(|(i,val)| {
         match val {
@@ -82,18 +69,17 @@ fn part1(disk: &mut [Block]) -> u64 {
             break // finished sorting disk
         }
         disk.swap(left, right);
-        //print_disk(disk);
     }
     checksum(disk)
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug)]
 struct File {
     id: usize,
     length: usize,
     position: usize
 }
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug)]
 struct Free {
     length: usize,
     position: usize
@@ -101,20 +87,19 @@ struct Free {
 
 struct Disk2 {
     files: Vec<File>,
-    frees: Vec<Free>
+    frees: Vec<Free>,
+    size: usize
 }
 
 impl ToString for Disk2 {
     fn to_string(&self) -> String {
-        let mut s = String::with_capacity(self.blockcount());
+        let mut s = String::new();
+        for _ in 0..self.size {
+            s.push('.');
+        }
         for file in self.files.iter() {
             for i in file.position..file.position+file.length {
                 s.replace_range(i..i+1, &file.id.to_string());
-            }
-        }
-        for free in self.frees.iter() {
-            for i in free.position..free.position+free.length {
-                s.replace_range(i..i+1,".");
             }
         }
         s
@@ -126,7 +111,7 @@ impl Disk2 {
         let mut files = vec![];
         let mut frees = vec![];
         let mut position = 0;
-        input.char_indices().for_each(|(index,c)| {
+        input.trim().char_indices().for_each(|(index,c)| {
             let length = c.to_digit(10).unwrap() as usize;
             let id = index/2;
             match index%2 {
@@ -136,11 +121,8 @@ impl Disk2 {
             };
             position += length;
         });
-        Disk2{ files, frees }
-    }
-
-    fn blockcount(&self) -> usize {
-        self.files.iter().map(|file| file.length).sum::<usize>() + self.frees.iter().map(|free| free.length).sum::<usize>()
+        let size = files.iter().map(|file| file.length).sum::<usize>() + frees.iter().map(|free| free.length).sum::<usize>();
+        Disk2{ files, frees, size }
     }
 
     fn first_free(&self, file: &File) -> Option<usize> {
@@ -153,28 +135,31 @@ impl Disk2 {
     }
 
     fn defrag(&mut self) {
-        for j in (0..self.files.len()).rev() {
-            let mut file = self.files[j];
-            println!("defrag file {} with length {}", file.id, file.length);
-            println!("{}", self.to_string());
-            match self.first_free(&file) {
+        for i in (0..self.files.len()).rev() {
+            match self.first_free(&self.files[i]) {
                 Some(j) => {
-                    let mut free = self.frees[j];
-                    (free.position, file.position) = (file.position, free.position);
+                    self.files[i].position = self.frees[j].position;
+                    if self.files[i].length < self.frees[j].length {
+                        self.frees[j].position += self.files[i].length;
+                        self.frees[j].length -= self.files[i].length;
+                    } else if self.files[i].length == self.frees[j].length {
+                        self.frees.remove(j);
+                    } else {
+                        unreachable!();
+                    }
                     continue
                 },
                 None => {
                     
                 }
             };
-            println!("there was nowhere to put file {}", file.id);
         }
     }
 }
 
 fn part2(input: &str) -> usize {
     let mut disk = Disk2::new(input);
-    println!("I think I have {} blocks, and they look like:", disk.blockcount());
+    println!("I think I have {} blocks, and they look like:", disk.size);
     println!("{}", disk.to_string());
 
     disk.defrag();
@@ -200,12 +185,6 @@ mod day09 {
         assert_eq!(part1(&mut disk), 1928)
     }
 
-    #[test]
-    fn empties() {
-        let disk = parse(SAMPLE);
-        assert_eq!(empty_block_count(&disk), "..............".len())
-    }
- 
     #[test]
     fn test2() {
         assert_eq!(part2(&SAMPLE), 2858)

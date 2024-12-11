@@ -22,7 +22,7 @@ by Donovan and Kernighan and it was very helpful.
 6. `**` object-oriented programming, order of operations, cycles, grids, why is this so slow?
 7. `**` recursion, operator precedence, digit string concatenation, why is this so fast?
 8. `**` vectors, procedural programming, [grids](https://docs.rs/grid/latest/grid/), distinct values (sets; deduplication)
-9. `* ` disk fragmentation, arrays, trickier-than-it-looks
+9. `**` disk fragmentation, arrays (trickier-than-it-looks, annoying procedural programs, puzzle could probably be solved faster than actually doing it...)
 10. `**` searching (I used BFS), grids, path-finding
 11. `**` dynamic programming, recursion, automata
 
@@ -54,6 +54,8 @@ z.B, to check if `a: u8` is one less than `b: u8`, use `a + 1 == b` instead of `
 (despite the phrasing of the prompt), and you only need to count occurrences of the numbered stones.
 I had my head wrapped around a jagged recursive triangle, but you don't need that.
 This is more like the iterative Fibonacci approach with `while i < k { (a, b) = (a + b, b); i += 1 }`.
+* `include_str!` can bring in the contents of a file. My tests show that the performance is about the same as `std::fs::read_to_string`,
+but it's nice to ship a binary with no dependent files.
 
 # References
 

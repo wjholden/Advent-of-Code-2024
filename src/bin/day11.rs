@@ -1,8 +1,7 @@
-use std::{collections::HashMap, fs};
+use std::collections::HashMap;
 
 fn main() {
-    let puzzle = fs::read_to_string("puzzles/day11.txt").unwrap();
-    println!("{}", puzzle);
+    let puzzle = include_str!("../../puzzles/day11.txt");
     println!("Part 1: {}", part1(&puzzle, 25));
     println!("Part 2: {}", part2(&puzzle, 75));
 }
@@ -11,9 +10,8 @@ fn part1(input: &str, blinks: u64) -> usize {
     let mut stones: Vec<u64> = input.split_whitespace().map(|s| {
         s.parse::<u64>().unwrap()
     }).collect();
-    //println!("{:?}", stones);
 
-    for blink in 0..blinks {
+    for _ in 0..blinks {
         let mut v = vec![];
         for x in stones.into_iter() {
             match x {
@@ -29,19 +27,23 @@ fn part1(input: &str, blinks: u64) -> usize {
             }
         };
         stones = v;
-        //println!("{blink}: {:?} ({})", stones, stones.len());
     }
     stones.len()
 }
 
 // I took inspiration from https://www.reddit.com/r/adventofcode/comments/1hbm0al/comment/m1hr2p6/
+// This whole thing is really a counting problem. A recursive solution isn't easy to memoize
+// (maybe impossible?) because the subtrees aren't of equal size, and it's hard to know
+// when you've reached the base case where you can stop early. So, if you start from 0,
+// you go to 1, to 2024, and then start branching. It looks like some branches do not
+// attract to some common value, so you end up with partially-overlapping subtrees that
+// you can't count until you have the whole thing.
 fn part2(input: &str, blinks: u8) -> u64 {
     let mut stones: HashMap<u64, u64> = input.split_whitespace().map(|s| {
         (s.parse::<u64>().unwrap(), 1)
     }).collect();
-    //println!("{:?}", stones);
 
-    for blink in 0..blinks {
+    for _ in 0..blinks {
         let mut y = HashMap::new();
         stones.into_iter().for_each(|(k,v)| {
             match k {
@@ -55,7 +57,6 @@ fn part2(input: &str, blinks: u8) -> u64 {
             };
         });
         stones = y;
-        //println!("{blink}: {:?} ({})", stones, stones.values().sum::<u64>());
     }
 
     stones.values().sum()
