@@ -24,7 +24,7 @@ by Donovan and Kernighan and it was very helpful.
 8. `**` vectors, procedural programming, [grids](https://docs.rs/grid/latest/grid/), distinct values (sets; deduplication)
 9. `* ` disk fragmentation, arrays, trickier-than-it-looks
 10. `**` searching (I used BFS), grids, path-finding
-11. `* ` dynamic programming, recursion, automata
+11. `**` dynamic programming, recursion, automata
 
 # Lessons Learned
 
