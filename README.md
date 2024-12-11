@@ -22,6 +22,9 @@ by Donovan and Kernighan and it was very helpful.
 6. `**` object-oriented programming, order of operations, cycles, grids, why is this so slow?
 7. `**` recursion, operator precedence, digit string concatenation, why is this so fast?
 8. `**` vectors, procedural programming, [grids](https://docs.rs/grid/latest/grid/), distinct values (sets; deduplication)
+9. `* ` disk fragmentation, arrays, trickier-than-it-looks
+10. `**` searching (I used BFS), grids, path-finding
+11. `* ` dynamic programming, recursion, automata
 
 # Lessons Learned
 
@@ -43,9 +46,18 @@ A hashmap might have been much easier than nested vectors.
 based on TTLs instead of keeping the path explored. It was a case where compute is faster than memory.
 * Someone else on [Reddit helped me with an extra test case](https://www.reddit.com/r/adventofcode/comments/1h81nc0/comment/m0ppjcy/).
 * `ilog` on integers is [much faster](https://www.reddit.com/r/adventofcode/comments/1h8l3z5/comment/m0vp3p7/) than casting to and from float types for logarithms.
+* https://stackoverflow.com/questions/40006219/why-is-it-discouraged-to-accept-a-reference-string-vec-or-box-as-a-function
+* https://stackoverflow.com/questions/30633177/implement-fmtdisplay-for-vect
+* Expect compiler errors or runtime crashes on integer overflow. One should prefer addition to subtraction when comparising distance.
+z.B, to check if `a: u8` is one less than `b: u8`, use `a + 1 == b` instead of `b - a == 1`.
+* Day 11 was a tricky dymanic programming problem. Two tricks: you don't need to worry about the stone order
+(despite the phrasing of the prompt), and you only need to count occurrences of the numbered stones.
+I had my head wrapped around a jagged recursive triangle, but you don't need that.
+This is more like the iterative Fibonacci approach with `while i < k { (a, b) = (a + b, b); i += 1 }`.
 
 # References
 
+* [CppNorth Keynote: Advent of Code, Behind the Scenes - Eric Wastl](https://www.youtube.com/watch?v=uZ8DcbhojOw)
 * [Rust Book](https://doc.rust-lang.org/book/)
 * [Rust by Example](https://doc.rust-lang.org/rust-by-example/)
 * [A Gentle Introduction To Rust](https://stevedonovan.github.io/rust-gentle-intro/)
