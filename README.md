@@ -28,6 +28,8 @@ Kernighan and it was very helpful.
 9. `**` disk fragmentation, arrays (trickier-than-it-looks, annoying procedural programs, puzzle could probably be solved faster than actually doing it...)
 10. `**` searching (I used BFS), grids, path-finding
 11. `**` dynamic programming, recursion, automata
+12. `**` more grids, divide-and-conquer was not the solution, graph searches
+13. `* ` linear algebra (`Ax=b`), greedy algorithms, integer division loses information
 
 # Lessons Learned
 
@@ -86,6 +88,7 @@ approach.
 You might accidentally copy a value without realizing it, then be surprised
 that your writes aren't working. A workaround is to just reference the array
 members directly.
+* Vector comparison (`v1 < v2`) might not quite do what you expect in [nalgebra](https://docs.rs/nalgebra/).
 
 # References
 
