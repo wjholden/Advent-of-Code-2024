@@ -1,16 +1,19 @@
 # Advent of Code 2024
 
-Third time's the charm. I attempted Rust in 2021 or so and very quickly realized
+Rust!
+
+Third time's the charm. I first attempted Rust in 2021 or so but quickly realized
 that this wasn't a language I could easily pick up. If you already know C++,
 Java, C#, or maybe JavaScript and Go then any of those languages are pretty
-reachable. Likewise, if you're already comfortable with Julia then Python should
+learnable. Likewise, if you're already comfortable with Julia then Python should
 feel pretty easy.
 
-Rust hasn't been like this for me. I read most of the Rust Book and also most
-of Rust By Example, both of which require some effort to get through. Still,
-I learned the hard way (by naïvely using *Mathematica* cold on AoC years ago)
-that it pays to read a book first. Last year, I read *The Go Programming Language*
-by Donovan and Kernighan and it was very helpful.
+Rust is different. The borrow checker and match statement are like nothing I had
+ever seen before. I read most of the Rust Book and also most of Rust By Example,
+both of which require some effort to get through. Still, I learned the hard way
+(by naïvely using *Mathematica* cold on AoC years ago) that it pays to read a
+book first. Last year, I read *The Go Programming Language* by Donovan and
+Kernighan and it was very helpful.
 
 # Daily Themes and Stars
 
@@ -29,10 +32,16 @@ by Donovan and Kernighan and it was very helpful.
 # Lessons Learned
 
 * VSCode helps so much when it shows the inferred types.
-* Sprinkle `&` on [closure parameters](https://doc.rust-lang.org/rust-by-example/fn/closures/closure_examples/iter_any.html) to make them more comfortable to use.
-* Use `&[T]` instead of `Vec<T>` as [function arguments](https://users.rust-lang.org/t/when-does-one-use-slices-as-arguments/89499).
-* `count()` might not do what you expect. Did you mean `len()`? You might need to collect the iterator into a collection.
-* `filter_map()` makes clever use of optionals to combine filter and map. It composes nicely with `match`.
+* Consider using `into_iter` when it's OK to consume the iterator or decorate
+[closure parameters]
+(https://doc.rust-lang.org/rust-by-example/fn/closures/closure_examples/iter_any.html)
+with `&` to make them a little more comfortable.
+* Use `&[T]` instead of `Vec<T>` as [function arguments]
+(https://users.rust-lang.org/t/when-does-one-use-slices-as-arguments/89499).
+* `count()` might not do what you expect. Did you mean `len()`? You might need to
+collect the iterator into a collection.
+* `filter_map()` makes clever use of optionals to combine filter and map. It
+composes nicely with `match`.
 * Rust regex doesn't support lookahead (`?=`). Might have been useful for day 4.
 * `Vec<Vec<char>>` sorta works for 2D strings, but it isn't as clean as you'd like.
 * Rust apparently has no try/catch.
@@ -42,20 +51,41 @@ A hashmap might have been much easier than nested vectors.
 * `is_sorted_by` and `sort_by` expect different comparison functions.
 `is_sorted_by` operates on booleans, `sort_by` uses `Ordering`.
 * Day 6 was difficult for me. I came up with an interesting solution
-([inspired by a Reddit comment](https://www.reddit.com/r/adventofcode/comments/1h7vpqi/comment/m0oxavw/))
-based on TTLs instead of keeping the path explored. It was a case where compute is faster than memory.
-* Someone else on [Reddit helped me with an extra test case](https://www.reddit.com/r/adventofcode/comments/1h81nc0/comment/m0ppjcy/).
-* `ilog` on integers is [much faster](https://www.reddit.com/r/adventofcode/comments/1h8l3z5/comment/m0vp3p7/) than casting to and from float types for logarithms.
+([inspired by a Reddit comment]
+(https://www.reddit.com/r/adventofcode/comments/1h7vpqi/comment/m0oxavw/))
+based on TTLs instead of keeping the path explored. It was a case where compute
+is faster than memory.
+* Someone else on [Reddit helped me with an extra test case]
+(https://www.reddit.com/r/adventofcode/comments/1h81nc0/comment/m0ppjcy/).
+* `ilog` on integers is [much faster]
+(https://www.reddit.com/r/adventofcode/comments/1h8l3z5/comment/m0vp3p7/) than 
+casting to and from float types for logarithms.
 * https://stackoverflow.com/questions/40006219/why-is-it-discouraged-to-accept-a-reference-string-vec-or-box-as-a-function
 * https://stackoverflow.com/questions/30633177/implement-fmtdisplay-for-vect
-* Expect compiler errors or runtime crashes on integer overflow. One should prefer addition to subtraction when comparising distance.
-z.B, to check if `a: u8` is one less than `b: u8`, use `a + 1 == b` instead of `b - a == 1`.
-* Day 11 was a tricky dymanic programming problem. Two tricks: you don't need to worry about the stone order
-(despite the phrasing of the prompt), and you only need to count occurrences of the numbered stones.
-I had my head wrapped around a jagged recursive triangle, but you don't need that.
+* Expect compiler errors or runtime crashes on integer overflow. One should
+prefer addition to subtraction when comparising distance. z.B, to check if
+`a: u8` is one less than `b: u8`, use `a + 1 == b` instead of `b - a == 1`.
+* Day 11 was a tricky dymanic programming problem. Two tricks: you don't need to
+worry about the stone order (despite the phrasing of the prompt), and you only 
+need to count occurrences of the numbered stones.
+* I had my head wrapped around a jagged recursive triangle, but you don't need that.
 This is more like the iterative Fibonacci approach with `while i < k { (a, b) = (a + b, b); i += 1 }`.
-* `include_str!` can bring in the contents of a file. My tests show that the performance is about the same as `std::fs::read_to_string`,
+You actually *can* use trees, but you need to count down
+to a basis of `depth=1`. See [[2024 Day 11][Python] MEGA TUTORIAL]
+(https://www.reddit.com/r/adventofcode/comments/1hbnyx1/2024_day_11python_mega_tutorial/).
+See also [[2024 Day 11] Every sequence converges to 3947 points (with proof)]
+(https://www.reddit.com/r/adventofcode/comments/1hbtz8w/2024_day_11_every_sequence_converges_to_3947/)
+for an interesting study of attractors in this problem.
+* `include_str!` can bring in the contents of a file. My tests show that the
+performance is about the same as `std::fs::read_to_string`,
 but it's nice to ship a binary with no dependent files.
+* In day 9 I had some trouble with the borrow checker. Passing a reference to a
+mutable struct into a function might not work. Consider the object-oriented
+approach.
+* Be careful with the Copy and Clone traits with the members of a mutable array.
+You might accidentally copy a value without realizing it, then be surprised
+that your writes aren't working. A workaround is to just reference the array
+members directly.
 
 # References
 

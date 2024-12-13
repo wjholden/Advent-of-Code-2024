@@ -159,12 +159,8 @@ impl Disk2 {
 
 fn part2(input: &str) -> usize {
     let mut disk = Disk2::new(input);
-    println!("I think I have {} blocks, and they look like:", disk.size);
-    println!("{}", disk.to_string());
 
     disk.defrag();
-
-    println!("{}", disk.to_string());
     
     disk.files.into_iter().map(|file| {
         (file.position..file.position+file.length).into_iter().sum::<usize>() * file.id
