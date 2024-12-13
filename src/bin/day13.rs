@@ -3,7 +3,6 @@ use regex::Regex;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day13.txt");
-    println!("{}", puzzle);
     println!("Part 1: {}", part1(&puzzle));
     println!("Part 2: {}", part2(&puzzle, true));
     // 159255020000000 too high
@@ -55,19 +54,17 @@ impl Machine {
         let m = matrix![self.a.x, self.b.x; self.a.y, self.b.y];
         if let Some(inv) = m.try_inverse() {
             let x = inv * self.prize;
-            //println!("Matrix {} is invertible. The inverse is {} and the solution is {}.", m, inv, x);
-            // I think we're guaranteed to find a solution here, but it might not fit the *integer*
-            // constraints of the problem.
+            // Yeah, it's ugly. We only want the integer solutions, but with
+            // floating-point arithmetic being what it is, we often end up with
+            // a fractional part in our result. This looks really sketchy, but
+            // it miraculously works out in the end.
             if (0.001 < x.x.fract() && x.x.fract() < 0.999) || (0.001 < x.y.fract() && x.y.fract() < 0.999) {
-                //println!("solution {x} has too much fractional part");
-                None
+                None // not an integer solution
             } else {
-                //println!("solution {x} has an acceptable fractional part");
                 Some(3.0 * x.x + x.y)
             }
         } else {
-            println!("could not invert {m}");
-            None
+            unreachable!() // this apparently never happens in our problem today
         }
     }
 }
