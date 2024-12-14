@@ -29,7 +29,8 @@ Kernighan and it was very helpful.
 10. `**` searching (I used BFS), grids, path-finding
 11. `**` dynamic programming, recursion, automata
 12. `**` more grids, divide-and-conquer was not the solution, graph searches
-13. `* ` linear algebra (`Ax=b`), greedy algorithms, integer division loses information
+13. `**` linear algebra (`Ax=b`), greedy algorithms, integer division loses information
+14. `**` corner case (well, "center case" since the middle doesn't count), constants, modulus operator, even more grids, find the Christmas tree
 
 # Lessons Learned
 
