@@ -93,6 +93,11 @@ members directly.
 * Vector comparison (`v1 < v2`) might not quite do what you expect in [nalgebra](https://docs.rs/nalgebra/).
 * I might have to check out [ndarray](https://crates.io/crates/ndarray).
 * These procedural days (days 6, 8, 9, 12, 15) are difficult. Maybe Rust makes it worse, maybe I'm just not good at them.
+* The swaps I did in day 15 probably made this harder than it needed to be.
+I had made an early design decision to model the game as a grid (2D array) with contents,
+rather than a collection of game objects with coordinates. Had I opted for the objects,
+I could have simply incremented their x/y positions as a group instead of this order-dependent swap nightmare.
+* [`flat_map`](https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.flat_map) combines map and flatten.
 
 # References
 

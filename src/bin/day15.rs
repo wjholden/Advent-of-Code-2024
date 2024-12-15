@@ -143,7 +143,7 @@ impl WideWarehouse {
         let mut widened = grid![];
         let mut robot = (0, 0);
         for (i, row) in grid.iter_rows().enumerate() {
-            widened.push_row(row.enumerate().map(|(j, c)| {
+            widened.push_row(row.enumerate().flat_map(|(j, c)| {
                 match c {
                     Content::Wall => [WideContent::Wall, WideContent::Wall],
                     Content::Box => [WideContent::LeftBox, WideContent::RightBox],
@@ -153,7 +153,7 @@ impl WideWarehouse {
                         [WideContent::Robot, WideContent::Empty]
                     },
                 }
-            }).flatten().collect());
+            }).collect());
         }   
         WideWarehouse{ robot, contents: widened }
     }
@@ -353,6 +353,67 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^";
 
 <vv<<^^<<^^";
 
+    const EXTRA_406: &str = "#######
+#.....#
+#.OO@.#
+#.....#
+#######
+
+<<";
+
+    const EXTRA_509: &str = "#######
+#.....#
+#.O#..#
+#..O@.#
+#.....#
+#######
+
+<v<<^";
+
+    const EXTRA_822: &str = "#######
+#.....#
+#.O.O@#
+#..O..#
+#..O..#
+#.....#
+#######
+
+<v<<>vv<^^";
+
+    const EXTRA_511: &str = "#######
+#.....#
+#.#O..#
+#..O@.#
+#.....#
+#######
+
+<v<^";
+
+    const EXTRA_816: &str = "######
+#....#
+#.O..#
+#.OO@#
+#.O..#
+#....#
+######
+
+<vv<<^";
+
+    const EXTRA_2339: &str = "#######
+#...#.#
+#.....#
+#.....#
+#.....#
+#.....#
+#.OOO@#
+#.OOO.#
+#..O..#
+#.....#
+#.....#
+#######
+
+v<vv<<^^^^^";
+
     #[test]
     fn parser() {
         let (grid, moves) = parse(SMALL);
@@ -386,5 +447,41 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^";
         let (grid, _) = parse(SAMPLE);
         let warehouse = WideWarehouse::new(grid);
         println!("{}", warehouse);
+    }
+
+    #[test]
+    fn extra1() {
+        // https://www.reddit.com/r/adventofcode/comments/1heoj7f/2024_day_15_part_2_more_sample_inputs_to_catch/
+        assert_eq!(part2(EXTRA_406), 406)
+    }
+
+    #[test]
+    fn extra2() {
+        // https://www.reddit.com/r/adventofcode/comments/1heoj7f/2024_day_15_part_2_more_sample_inputs_to_catch/
+        assert_eq!(part2(EXTRA_509), 509)
+    }
+
+    #[test]
+    fn extra3() {
+        // https://www.reddit.com/r/adventofcode/comments/1heoj7f/comment/m25f7qs/
+        assert_eq!(part2(EXTRA_822), 822)
+    }
+
+    #[test]
+    fn extra4() {
+        // https://www.reddit.com/r/adventofcode/comments/1heoj7f/comment/m25g60k/
+        assert_eq!(part2(EXTRA_511), 511)
+    }
+
+    #[test]
+    fn extra5() {
+        // https://www.reddit.com/r/adventofcode/comments/1heoj7f/comment/m25g60k/
+        assert_eq!(part2(EXTRA_816), 816)
+    }
+
+    #[test]
+    fn extra6() {
+        // https://www.reddit.com/r/adventofcode/comments/1heoj7f/comment/m25pxqg/
+        assert_eq!(part2(EXTRA_2339), 2339)
     }
 }
