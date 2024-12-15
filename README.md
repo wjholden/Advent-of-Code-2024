@@ -31,6 +31,7 @@ Kernighan and it was very helpful.
 12. `**` more grids, divide-and-conquer was not the solution, graph searches
 13. `**` linear algebra (`Ax=b`), greedy algorithms, integer division loses information
 14. `**` corner case (well, "center case" since the middle doesn't count), constants, modulus operator, even more grids, find the Christmas tree
+15. `**` still more grids, refactoring, procedural programming/mutable state, so many cases, order of operations, queues
 
 # Lessons Learned
 
@@ -90,6 +91,8 @@ You might accidentally copy a value without realizing it, then be surprised
 that your writes aren't working. A workaround is to just reference the array
 members directly.
 * Vector comparison (`v1 < v2`) might not quite do what you expect in [nalgebra](https://docs.rs/nalgebra/).
+* I might have to check out [ndarray](https://crates.io/crates/ndarray).
+* These procedural days (days 6, 8, 9, 12, 15) are difficult. Maybe Rust makes it worse, maybe I'm just not good at them.
 
 # References
 
