@@ -32,6 +32,7 @@ Kernighan and it was very helpful.
 13. `**` linear algebra (`Ax=b`), greedy algorithms, integer division loses information
 14. `**` corner case (well, "center case" since the middle doesn't count), constants, modulus operator, even more grids, find the Christmas tree
 15. `**` still more grids, refactoring, procedural programming/mutable state, so many cases, order of operations, queues
+16. `**` A*, pathfinding, complex arithmetic
 
 # Lessons Learned
 
@@ -55,14 +56,11 @@ A hashmap might have been much easier than nested vectors.
 * `is_sorted_by` and `sort_by` expect different comparison functions.
 `is_sorted_by` operates on booleans, `sort_by` uses `Ordering`.
 * Day 6 was difficult for me. I came up with an interesting solution
-([inspired by a Reddit comment]
-(https://www.reddit.com/r/adventofcode/comments/1h7vpqi/comment/m0oxavw/))
+([inspired by a Reddit comment](https://www.reddit.com/r/adventofcode/comments/1h7vpqi/comment/m0oxavw/))
 based on TTLs instead of keeping the path explored. It was a case where compute
 is faster than memory.
-* Someone else on [Reddit helped me with an extra test case]
-(https://www.reddit.com/r/adventofcode/comments/1h81nc0/comment/m0ppjcy/).
-* `ilog` on integers is [much faster]
-(https://www.reddit.com/r/adventofcode/comments/1h8l3z5/comment/m0vp3p7/) than 
+* Someone else on [Reddit helped me with an extra test case](https://www.reddit.com/r/adventofcode/comments/1h81nc0/comment/m0ppjcy/).
+* `ilog` on integers is [much faster](https://www.reddit.com/r/adventofcode/comments/1h8l3z5/comment/m0vp3p7/) than 
 casting to and from float types for logarithms.
 * https://stackoverflow.com/questions/40006219/why-is-it-discouraged-to-accept-a-reference-string-vec-or-box-as-a-function
 * https://stackoverflow.com/questions/30633177/implement-fmtdisplay-for-vect
@@ -75,10 +73,8 @@ need to count occurrences of the numbered stones.
 * I had my head wrapped around a jagged recursive triangle, but you don't need that.
 This is more like the iterative Fibonacci approach with `while i < k { (a, b) = (a + b, b); i += 1 }`.
 You actually *can* use trees, but you need to count down
-to a basis of `depth=1`. See [[2024 Day 11][Python] MEGA TUTORIAL]
-(https://www.reddit.com/r/adventofcode/comments/1hbnyx1/2024_day_11python_mega_tutorial/).
-See also [[2024 Day 11] Every sequence converges to 3947 points (with proof)]
-(https://www.reddit.com/r/adventofcode/comments/1hbtz8w/2024_day_11_every_sequence_converges_to_3947/)
+to a basis of `depth=1`. See [[2024 Day 11][Python] MEGA TUTORIAL](https://www.reddit.com/r/adventofcode/comments/1hbnyx1/2024_day_11python_mega_tutorial/).
+See also [[2024 Day 11] Every sequence converges to 3947 points (with proof)](https://www.reddit.com/r/adventofcode/comments/1hbtz8w/2024_day_11_every_sequence_converges_to_3947/)
 for an interesting study of attractors in this problem.
 * `include_str!` can bring in the contents of a file. My tests show that the
 performance is about the same as `std::fs::read_to_string`,
@@ -98,6 +94,11 @@ I had made an early design decision to model the game as a grid (2D array) with 
 rather than a collection of game objects with coordinates. Had I opted for the objects,
 I could have simply incremented their x/y positions as a group instead of this order-dependent swap nightmare.
 * [`flat_map`](https://doc.rust-lang.org/std/iter/trait.Iterator.html#method.flat_map) combines map and flatten.
+* The [`@` operator](https://stackoverflow.com/questions/69435734/rust-what-does-the-at-sign-operator-do) binds matched values of a pattern to values.
+* Rust's `std::collections` does not have a
+[red-black tree](https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html), but it does provide a 
+[BTree](https://doc.rust-lang.org/std/collections/btree_map/struct.BTreeMap.html).
+
 
 # References
 
