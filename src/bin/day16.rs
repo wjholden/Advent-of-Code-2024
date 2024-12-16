@@ -27,6 +27,7 @@ fn part1(input: &str) -> Result<(i32, usize), ()> {
     let successors = |pd: &PD| pd.successors(&grid);
     let end = Complex::new(endr as i32, endc as i32);
     let heuristic = |pd: &PD| (pd.position - end).l1_norm();
+    //let heuristic = |_pd: &PD| 1; // this also works
     let success = |pd: &PD| pd.position == end;
 
     if let Some((paths, path_length)) = astar_bag_collect(&start, successors, heuristic, success) {
