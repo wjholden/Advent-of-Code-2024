@@ -33,16 +33,15 @@ Kernighan and it was very helpful.
 14. `**` corner case (well, "center case" since the middle doesn't count), constants, modulus operator, even more grids, find the Christmas tree
 15. `**` still more grids, refactoring, procedural programming/mutable state, so many cases, order of operations, queues
 16. `**` A*, pathfinding, complex arithmetic
+17. `**` assembly, backpropagation, too big for [Goal Seek](https://www.reddit.com/r/adventofcode/comments/1hga8be/2024_day_17_part_2_excel_goal_seek_had_no_chance/)
 
 # Lessons Learned
 
 * VSCode helps so much when it shows the inferred types.
 * Consider using `into_iter` when it's OK to consume the iterator or decorate
-[closure parameters]
-(https://doc.rust-lang.org/rust-by-example/fn/closures/closure_examples/iter_any.html)
+[closure parameters](https://doc.rust-lang.org/rust-by-example/fn/closures/closure_examples/iter_any.html)
 with `&` to make them a little more comfortable.
-* Use `&[T]` instead of `Vec<T>` as [function arguments]
-(https://users.rust-lang.org/t/when-does-one-use-slices-as-arguments/89499).
+* Use `&[T]` instead of `Vec<T>` as [function arguments](https://users.rust-lang.org/t/when-does-one-use-slices-as-arguments/89499).
 * `count()` might not do what you expect. Did you mean `len()`? You might need to
 collect the iterator into a collection.
 * `filter_map()` makes clever use of optionals to combine filter and map. It

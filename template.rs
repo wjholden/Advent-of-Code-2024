@@ -5,7 +5,7 @@ fn main() {
     //println!("Part 2: {}", part2(&puzzle));
 }
 
-fn part1(_input: &str) -> i32 {
+fn part1(input: &str) -> i32 {
     0
 }
 
