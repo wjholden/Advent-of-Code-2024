@@ -34,6 +34,7 @@ Kernighan and it was very helpful.
 15. `**` still more grids, refactoring, procedural programming/mutable state, so many cases, order of operations, queues
 16. `**` A*, pathfinding, complex arithmetic
 17. `**` assembly, backpropagation, too big for [Goal Seek](https://www.reddit.com/r/adventofcode/comments/1hga8be/2024_day_17_part_2_excel_goal_seek_had_no_chance/)
+18. `**` pathfinding, bisection
 
 # Lessons Learned
 
