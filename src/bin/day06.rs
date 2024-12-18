@@ -162,7 +162,8 @@ fn is_cyclic(world: &World, xi: i16, yi: i16) -> bool {
         y: yi,
         dx: 0,
         dy: -1,
-    };    let mut path: HashSet<Guard> = HashSet::new();
+    };
+    let mut path: HashSet<Guard> = HashSet::new();
     loop {
         if path.insert(guard.clone()) == false {
             return true;

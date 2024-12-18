@@ -98,6 +98,7 @@ I could have simply incremented their x/y positions as a group instead of this o
 * Rust's `std::collections` does not have a
 [red-black tree](https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html), but it does provide a 
 [BTree](https://doc.rust-lang.org/std/collections/btree_map/struct.BTreeMap.html).
+* I was surprised that BTreeSet produced slightly faster runtimes than HashSet in day 18.
 
 
 # References
