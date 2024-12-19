@@ -35,6 +35,7 @@ Kernighan and it was very helpful.
 16. `**` A*, pathfinding, complex arithmetic
 17. `**` assembly, backpropagation, too big for [Goal Seek](https://www.reddit.com/r/adventofcode/comments/1hga8be/2024_day_17_part_2_excel_goal_seek_had_no_chance/)
 18. `**` pathfinding, bisection
+19. `**` tries, dynamic programming
 
 # Lessons Learned
 
@@ -99,7 +100,7 @@ I could have simply incremented their x/y positions as a group instead of this o
 [red-black tree](https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html), but it does provide a 
 [BTree](https://doc.rust-lang.org/std/collections/btree_map/struct.BTreeMap.html).
 * I was surprised that BTreeSet produced slightly faster runtimes than HashSet in day 18.
-
+* [socket2](https://docs.rs/socket2/latest/socket2/) might be useful to me for future networking projects requiring raw sockets.
 
 # References
 
@@ -109,3 +110,7 @@ I could have simply incremented their x/y positions as a group instead of this o
 * [A Gentle Introduction To Rust](https://stevedonovan.github.io/rust-gentle-intro/)
 * [Back to the Building Blocks: A Path Toward Secure and Measurable Software](https://www.whitehouse.gov/wp-content/uploads/2024/02/Final-ONCD-Technical-Report.pdf)
 * [Response to the Office of the National Cyber Director's Request for Information on Open Source Software Security](https://www.regulations.gov/comment/ONCD-2023-0002-0045)
+* [One Hundred Thousand Lines of Rust](https://matklad.github.io/2021/09/05/Rust100k.html)
+* [[2024 Day 13] An explanation of the mathematics](https://www.reddit.com/r/adventofcode/comments/1hd7irq/2024_day_13_an_explanation_of_the_mathematics/)
+* [[2024 Day 14 Part 2] Why have fun with image detection when you can use maths?](https://www.reddit.com/r/adventofcode/comments/1he0asr/2024_day_14_part_2_why_have_fun_with_image/)
+* [(fish-shell) Rewrite it in Rust #9512](https://github.com/fish-shell/fish-shell/pull/9512#issuecomment-1410820102)
