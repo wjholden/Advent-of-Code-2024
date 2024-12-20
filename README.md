@@ -36,10 +36,16 @@ Kernighan and it was very helpful.
 17. `**` assembly, backpropagation, too big for [Goal Seek](https://www.reddit.com/r/adventofcode/comments/1hga8be/2024_day_17_part_2_excel_goal_seek_had_no_chance/)
 18. `**` pathfinding, bisection
 19. `**` tries, dynamic programming
+20. `**` cost analysis (this problem is smaller than it looks), abstraction, even more index trickiness
 
 # Lessons Learned
 
-* VSCode helps so much when it shows the inferred types.
+* VSCode helps so much when it shows the inferred types. This feature is called
+[inlay hints](https://code.visualstudio.com/docs/languages/rust#_inlay-hints).
+* On the other hand, RustRover's Copilot-like predictions would take some getting
+used to. I found myself accepting predictions that looked right, but later turned
+out to have subtle mistakes that were tricky to debug. I know lots of people feel
+more productive iwth Copilot, but for now I need to learn the language for myself.
 * Consider using `into_iter` when it's OK to consume the iterator or decorate
 [closure parameters](https://doc.rust-lang.org/rust-by-example/fn/closures/closure_examples/iter_any.html)
 with `&` to make them a little more comfortable.
@@ -60,6 +66,8 @@ A hashmap might have been much easier than nested vectors.
 ([inspired by a Reddit comment](https://www.reddit.com/r/adventofcode/comments/1h7vpqi/comment/m0oxavw/))
 based on TTLs instead of keeping the path explored. It was a case where compute
 is faster than memory.
+* My Day 6 solution is among my slowest programs. I wonder if a grid would have
+been better than the hashmap.
 * Someone else on [Reddit helped me with an extra test case](https://www.reddit.com/r/adventofcode/comments/1h81nc0/comment/m0ppjcy/).
 * `ilog` on integers is [much faster](https://www.reddit.com/r/adventofcode/comments/1h8l3z5/comment/m0vp3p7/) than 
 casting to and from float types for logarithms.
@@ -70,11 +78,11 @@ prefer addition to subtraction when comparising distance. z.B, to check if
 `a: u8` is one less than `b: u8`, use `a + 1 == b` instead of `b - a == 1`.
 * Day 11 was a tricky dymanic programming problem. Two tricks: you don't need to
 worry about the stone order (despite the phrasing of the prompt), and you only 
-need to count occurrences of the numbered stones.
-* I had my head wrapped around a jagged recursive triangle, but you don't need that.
-This is more like the iterative Fibonacci approach with `while i < k { (a, b) = (a + b, b); i += 1 }`.
-You actually *can* use trees, but you need to count down
-to a basis of `depth=1`. See [[2024 Day 11][Python] MEGA TUTORIAL](https://www.reddit.com/r/adventofcode/comments/1hbnyx1/2024_day_11python_mega_tutorial/).
+need to count occurrences of the numbered stones. I had my head wrapped around
+a jagged recursive triangle, but you don't need that. This is more like the 
+iterative Fibonacci approach with `while i < k { (a, b) = (a + b, b); i += 1 }`.
+You actually *can* use trees, but you need to count down to a basis of `depth=1`.
+See [[2024 Day 11][Python] MEGA TUTORIAL](https://www.reddit.com/r/adventofcode/comments/1hbnyx1/2024_day_11python_mega_tutorial/).
 See also [[2024 Day 11] Every sequence converges to 3947 points (with proof)](https://www.reddit.com/r/adventofcode/comments/1hbtz8w/2024_day_11_every_sequence_converges_to_3947/)
 for an interesting study of attractors in this problem.
 * `include_str!` can bring in the contents of a file. My tests show that the
@@ -100,7 +108,6 @@ I could have simply incremented their x/y positions as a group instead of this o
 [red-black tree](https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html), but it does provide a 
 [BTree](https://doc.rust-lang.org/std/collections/btree_map/struct.BTreeMap.html).
 * I was surprised that BTreeSet produced slightly faster runtimes than HashSet in day 18.
-* [socket2](https://docs.rs/socket2/latest/socket2/) might be useful to me for future networking projects requiring raw sockets.
 
 # References
 
@@ -114,3 +121,19 @@ I could have simply incremented their x/y positions as a group instead of this o
 * [[2024 Day 13] An explanation of the mathematics](https://www.reddit.com/r/adventofcode/comments/1hd7irq/2024_day_13_an_explanation_of_the_mathematics/)
 * [[2024 Day 14 Part 2] Why have fun with image detection when you can use maths?](https://www.reddit.com/r/adventofcode/comments/1he0asr/2024_day_14_part_2_why_have_fun_with_image/)
 * [(fish-shell) Rewrite it in Rust #9512](https://github.com/fish-shell/fish-shell/pull/9512#issuecomment-1410820102)
+* [Rustfinity](https://www.rustfinity.com)
+* [Rustlings](https://rustlings.cool)
+
+# Libraries
+* [grid](https://docs.rs/grid/) for 2D vectors that don't need to be full matrices.
+* [nalgebra](https://docs.rs/nalgebra/) for matrices.
+* [socket2](https://docs.rs/socket2/) for future networking projects requiring raw sockets.
+* [Ratatui](https://ratatui.rs/) for terminal user interfaces (TUI).
+* [clap](https://docs.rs/clap/) for command-line argument parsing.
+* [hyper](https://hyper.rs/) and [axum](https://github.com/tokio-rs/axum) for making web applications.
+* [SQLx](https://github.com/launchbadge/sqlx) for accessing databases.
+* [Serde](https://serde.rs/) for serializing and deserializing JSON and many other data formats.
+* [nom](https://github.com/rust-bakery/nom) for parsing.
+* [Bevy](https://bevyengine.org/) for games.
+* [pathfinding](https://rfc1149.net/devel/pathfinding.html) for graphs.
+* [Rayon](https://docs.rs/rayon/) for parallelism.

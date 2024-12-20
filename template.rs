@@ -1,11 +1,15 @@
+use std::time::Instant;
+
 fn main() {
-    let puzzle = include_str!("../../puzzles/dayXX.txt");
-    println!("{}", puzzle);
+    println!("Day 99");
+    let start = Instant::now();
+    let puzzle = include_str!("../../puzzles/day99.txt");
     println!("Part 1: {}", part1(&puzzle));
-    //println!("Part 2: {}", part2(&puzzle));
+    // println!("Part 2: {}", part2(&puzzle));
+    println!("Time: {} milliseconds", start.elapsed().as_millis());
 }
 
-fn part1(input: &str) -> i32 {
+fn part1(input: &str) -> usize {
     0
 }
 
