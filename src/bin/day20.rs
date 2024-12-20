@@ -7,7 +7,6 @@ fn main() {
     let puzzle = include_str!("../../puzzles/day20.txt");
     println!("Part 1: {}", part1(&puzzle, 100, 2)); // 1511
     println!("Part 2: {}", part1(&puzzle, 100, 20));
-    // println!("Part 2: {}", part2(&puzzle));
 }
 
 fn part1(input: &str, picoseconds_saved: usize, cheat_length: usize) -> usize {
@@ -83,13 +82,10 @@ fn adjacencies(row: usize, col: usize, rows: usize, cols: usize, delta: usize) -
     let left = 0.max(col - delta);
     let right = (cols-1).min(col + delta);
 
-    //println!("At {row},{col} our boundary box is {top} above, {bottom} below, {left} to the left and {right} to the right.");
-
     for i in top..=bottom {
         for j in left..=right {
             let distance = i.abs_diff(row) + j.abs_diff(col);
-            //println!("{i},{j} distance is {distance}");
-            if /*1 < distance &&*/ distance <= delta as u32 {
+            if distance <= delta as u32 {
                 adj.push((i as usize, j as usize));
             }
         }
