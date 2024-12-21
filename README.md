@@ -37,7 +37,7 @@ Kernighan and it was very helpful.
 18. `**` pathfinding, bisection
 19. `**` tries, dynamic programming
 20. `**` cost analysis (this problem is smaller than it looks), abstraction, even more index trickiness
-21. `  ` robotics, indirection, nested loops
+21. `  ` robotics, indirection, nested loops...I give up.
 
 # Lessons Learned
 

@@ -1,0 +1,67 @@
+[
+    {
+        "label": "^",
+        "neighbors": [
+            {
+                "label": "A",
+                "direction": ">"
+            },
+            {
+                "label": "v",
+                "direction": "v"
+            }
+        ]
+    },
+    {
+        "label": "A",
+        "neighbors": [
+            {
+                "label": "^",
+                "direction": "<"
+            },
+            {
+                "label": ">",
+                "direction": "v"
+            }
+        ]
+    },
+    {
+        "label": "<",
+        "neighbors": [
+            {
+                "label": "v",
+                "direction": ">"
+            }
+        ]
+    },
+    {
+        "label": "v",
+        "neighbors": [
+            {
+                "label": "<",
+                "direction": "<"
+            },
+            {
+                "label": "^",
+                "direction": "^"
+            },
+            {
+                "label": ">",
+                "direction": ">"
+            }
+        ]
+    },
+    {
+        "label": ">",
+        "neighbors": [
+            {
+                "label": "A",
+                "direction": "^"
+            },
+            {
+                "label": "v",
+                "direction": "<"
+            }
+        ]
+    }
+]

@@ -1,116 +1,117 @@
-use std::collections::{BTreeMap, HashMap, VecDeque};
+use core::panic;
+use std::collections::HashMap;
+
+use pathfinding::prelude::dijkstra;
+use serde::Deserialize;
 
 fn main() {
     println!("Day 21");
     let puzzle = include_str!("../../puzzles/day21.txt");
-    println!("Part 1: {}", part1(&puzzle));
+    println!("Part 1: {}", part1(&puzzle)); // 133054 too high
     // println!("Part 2: {}", part2(&puzzle));
 }
 
+#[derive(Debug, Deserialize)]
+struct Key {
+    label: char,
+    neighbors: Vec<Neighbor>
+}
+
+#[derive(Debug, Deserialize)]
+struct Neighbor {
+    label: char,
+    direction: char
+}
+
 #[derive(Debug)]
-struct Keypad {
-    buttons: BTreeMap<char, (i8, i8)>, // (key, (row, col))
-    //cache: HashMap<(char,char), Vec<char>>, // ((src key, dst key), [path])
+struct Robot {
     position: char,
+    edges: HashMap<char, Vec<char>>, // adjacency list for graph exploration
+    directions: HashMap<(char, char), char>,
 }
 
-impl Keypad {
-    fn new(layout: Vec<(char, (i8, i8))>) -> Keypad {
-        let buttons = BTreeMap::from_iter(layout);
-        //let directions = HashMap::new();
-        Keypad { buttons, /*cache: HashMap::new(),*/ position: 'A' }
-    }
-
-    pub fn new_numeric() -> Keypad {
-        Keypad::new(vec![
-            ('7', (0, 0)),
-            ('8', (0, 1)),
-            ('9', (0, 2)),
-            ('4', (1, 0)),
-            ('5', (1, 1)),
-            ('6', (1, 2)),
-            ('1', (2, 0)),
-            ('2', (2, 1)),
-            ('3', (2, 2)),
-            ('0', (3, 1)),
-            ('A', (3, 2)),
-        ])
-    }
-
-    pub fn new_directional() -> Keypad {
-        Keypad::new(vec![
-            ('^', (0, 1)),
-            ('A', (0, 2)),
-            ('<', (1, 0)),
-            ('v', (1, 1)),
-            ('>', (1, 2)),
-        ])
-    }
-
-    pub fn goto(&mut self, destination: char) -> Vec<char> {
-        // perform an ugly BFS to find the button. We can probably memoize this later.
-        let mut frontier = VecDeque::new();
-        frontier.push_back(self.position);
-        let mut path = HashMap::new();
-        let buttons_inv: HashMap<(i8, i8), char> = self.buttons.iter().map(
-            |(&key, &value)| (value, key)).collect();
-        let directions = HashMap::from([
-            ((-1, 0), '^'),
-            ((0, 1), '>'),
-            ((1, 0), 'v'),
-            ((0, -1), '<'),
-        ]);
-
-        loop {
-            let current = frontier.pop_front().unwrap();
-            if current == destination {
-                break
+impl Robot {
+    fn new(keypad: &str) -> Robot {
+        let keypad: Vec<Key> = serde_json::from_str(keypad).unwrap();
+        let mut edges = HashMap::new();
+        let mut directions = HashMap::new();
+        for key in keypad {
+            let mut adj = vec![];
+            for neighbor in key.neighbors {
+                adj.push(neighbor.label);
+                directions.insert((key.label, neighbor.label), neighbor.direction);
             }
-            let (row, col) = *self.buttons.get(&current).unwrap();
+            edges.insert(key.label, adj);
+        }
+        Robot {
+            position: 'A',
+            edges, 
+            directions
+        }
+    }
 
-            for ((dr, dc), label) in directions.iter() {
-                if let Some(&neighbor) = buttons_inv.get(&(row+dr, col+dc)) {
-                    if !path.contains_key(&neighbor) {
-                        path.insert(neighbor, (current, *label));
-                        frontier.push_back(neighbor);
-                    }
-                }
+    fn new_directional() -> Robot {
+        Robot::new(include_str!("directional_keypad.json"))
+    }
+
+    fn new_numeric() -> Robot {
+        Robot::new(include_str!("numeric_keypad.json"))
+    }
+
+    fn goto(&mut self, destination: char) -> Vec<char> {
+        let start = self.position;
+        if !self.edges.contains_key(&destination) {
+            panic!("Destination {destination} is not in our keypad ({:?}).", self.edges.keys());
+        }
+        let successors = |x: &char| {
+            let mut adj = vec![];
+            for neighbor in self.edges.get(x).unwrap() {
+                // This is probably where we can optimize the solution.
+                // Right now we're treating each node as equal cost, but really
+                // we need to favor consecutive button presses as much as possible.
+                adj.push((*neighbor, 1))
             }
-            //println!("from {current} we can explore {frontier:?}");
-        }
-
-        let mut unwind = destination;
-        let mut sequence = vec![];
-        while unwind != self.position {
-            let (parent, label) = *path.get(&unwind).unwrap();
-            sequence.push(label);
-            unwind = parent;
-        }
+            adj
+        };
+        let (path, _length) = dijkstra(&start, successors, |&x| x == destination).unwrap();
         self.position = destination;
-        
-        // check for contradictions
-        assert!(!(sequence.contains(&'<') && sequence.contains(&'>')));
-        assert!(!(sequence.contains(&'^') && sequence.contains(&'v')));
+        let mut instructions = vec![];
+        for i in 1..path.len() {
+            let a = path[i-1];
+            let b = path[i];
+            instructions.push(*self.directions.get(&(a,b)).unwrap());
+        }
 
-        sequence.sort();
-        //sequence.reverse();
-        sequence.push('A');
-        sequence
+        instructions.sort();
+        if instructions.contains(&'<') {
+            instructions.reverse();
+        }
+
+        instructions.push('A');
+        instructions
     }
 }
 
+// https://www.reddit.com/r/adventofcode/comments/1hj7f89/2024_day_21_part_1_found_a_rule_to_make_it_work/
+// https://www.reddit.com/r/adventofcode/comments/1hja685/2024_day_21_here_are_some_examples_and_hints_for/
 fn part1(input: &str) -> usize {
     let full_lines = parse(input);
 
-    let mut numpad = Keypad::new_numeric();
-    let mut dpad_1 = Keypad::new_directional();
-    let mut dpad_2 = Keypad::new_directional();
+    let mut numpad = Robot::new_numeric();
+    let mut dpad_1 = Robot::new_directional();
+    let mut dpad_2 = Robot::new_directional();
+
+    //println!("Numpad: {numpad:?}");
+    //println!("1st D-Pad: {dpad_1:?}");
+    //println!("2nd D-Pad: {dpad_2:?}");
+
     let mut complexity = 0;
 
     for line in full_lines {        
         let mut s1 = String::new();
         let mut s2 = String::new();
         let mut s3 = String::new();
+        let mut length = 0;
 
         for dst in line.chars() {
             for dst in numpad.goto(dst) {
@@ -119,17 +120,25 @@ fn part1(input: &str) -> usize {
                     s2.push(dst);
                     for dst in dpad_2.goto(dst) {
                         s3.push(dst);
-                    }
+                        length += 1;
+                    }   
                 }
             }
+            s3.push(' ');
+            s2.push(' ');
+            s1.push(' ');
         }
         let num: usize = line[0..3].parse().unwrap();
-        complexity += num * s3.len();
+        complexity += num * length;
         println!("{s3}");
         println!("{s2}");
         println!("{s1}");
-        println!("{line} (complexity: {} * {})", s3.len(), num);
+        println!("{line} (complexity: {} * {})", length, num);
     }
+
+    let mut test = ['<', '>', 'v', '^'];
+    test.sort();
+    println!("{test:?}");
 
     complexity
 }
@@ -154,7 +163,7 @@ mod day21 {
     fn test1() {
         assert_eq!(part1(SAMPLE), 126384)
     }
- 
+
     //#[test]
     //fn test2() {
         //assert_eq!(part2(SAMPLE), 0)
