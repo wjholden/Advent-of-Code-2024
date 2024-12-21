@@ -73,6 +73,7 @@ impl Robot {
             }
             adj
         };
+
         let (path, _length) = dijkstra(&start, successors, |&x| x == destination).unwrap();
         self.position = destination;
         let mut instructions = vec![];
@@ -88,6 +89,9 @@ impl Robot {
         }
 
         instructions.push('A');
+        // contradictions
+        assert!(!(instructions.contains(&'v') && instructions.contains(&'^')));
+        assert!(!(instructions.contains(&'<') && instructions.contains(&'>')));
         instructions
     }
 }
