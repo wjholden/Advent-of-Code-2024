@@ -37,6 +37,7 @@ Kernighan and it was very helpful.
 18. `**` pathfinding, bisection
 19. `**` tries, dynamic programming
 20. `**` cost analysis (this problem is smaller than it looks), abstraction, even more index trickiness
+21. `  ` robotics, indirection, nested loops
 
 # Lessons Learned
 
@@ -131,6 +132,7 @@ I could have simply incremented their x/y positions as a group instead of this o
 * [Ratatui](https://ratatui.rs/) for terminal user interfaces (TUI).
 * [clap](https://docs.rs/clap/) for command-line argument parsing.
 * [hyper](https://hyper.rs/) and [axum](https://github.com/tokio-rs/axum) for making web applications.
+* [Handlebars](https://docs.rs/handlebars/), [Tera](https://keats.github.io/tera/), [Maud](https://maud.lambda.xyz/), and [Askama](https://github.com/rinja-rs/askama) for HTML templating.
 * [SQLx](https://github.com/launchbadge/sqlx) for accessing databases.
 * [Serde](https://serde.rs/) for serializing and deserializing JSON and many other data formats.
 * [nom](https://github.com/rust-bakery/nom) for parsing.
