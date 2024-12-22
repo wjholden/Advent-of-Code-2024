@@ -1,13 +1,13 @@
 use core::panic;
 use std::collections::HashMap;
 
+use itertools::Itertools;
 use pathfinding::prelude::dijkstra;
 use serde::Deserialize;
 
 fn main() {
-    println!("Day 21");
     let puzzle = include_str!("../../puzzles/day21.txt");
-    println!("Part 1: {}", part1(&puzzle)); // 133054 too high
+    println!("Part 1: {}", part1(&puzzle));
     // println!("Part 2: {}", part2(&puzzle));
 }
 
@@ -75,7 +75,6 @@ impl Robot {
         };
 
         let (path, _length) = dijkstra(&start, successors, |&x| x == destination).unwrap();
-        self.position = destination;
         let mut instructions = vec![];
         for i in 1..path.len() {
             let a = path[i-1];
@@ -84,7 +83,23 @@ impl Robot {
         }
 
         instructions.sort();
-        if instructions.contains(&'<') {
+
+        // https://www.reddit.com/r/adventofcode/comments/1hj4d0c/comment/m36s61s/?context=3
+        // 
+        // Consider a solution like this:
+        // https://www.reddit.com/r/adventofcode/comments/1hja685/comment/m35rvek/
+        // where we just manually store all possible moves in our database and
+        // don't both with programmatic pathfinding.
+        // I'm so annoyed with this problem.
+        let mut vertical_first = false;
+        if (self.position == '0' || self.position == 'A') &&
+            (destination == '1' || destination == '4' || destination == '7') {
+                vertical_first = true;
+        }
+        if instructions.contains(&'v') && instructions.contains(&'>') {
+            vertical_first = true;
+        }
+        if vertical_first {
             instructions.reverse();
         }
 
@@ -92,6 +107,7 @@ impl Robot {
         // contradictions
         assert!(!(instructions.contains(&'v') && instructions.contains(&'^')));
         assert!(!(instructions.contains(&'<') && instructions.contains(&'>')));
+        self.position = destination;
         instructions
     }
 }
@@ -105,44 +121,23 @@ fn part1(input: &str) -> usize {
     let mut dpad_1 = Robot::new_directional();
     let mut dpad_2 = Robot::new_directional();
 
-    //println!("Numpad: {numpad:?}");
-    //println!("1st D-Pad: {dpad_1:?}");
-    //println!("2nd D-Pad: {dpad_2:?}");
-
     let mut complexity = 0;
 
-    for line in full_lines {        
-        let mut s1 = String::new();
-        let mut s2 = String::new();
-        let mut s3 = String::new();
-        let mut length = 0;
+    // Part 2: memoize (sequence,depth) -> ?? 
+    // https://www.reddit.com/r/adventofcode/comments/1hj2odw/comment/m38fg11/
 
-        for dst in line.chars() {
-            for dst in numpad.goto(dst) {
-                s1.push(dst);
-                for dst in dpad_1.goto(dst) {
-                    s2.push(dst);
-                    for dst in dpad_2.goto(dst) {
-                        s3.push(dst);
-                        length += 1;
-                    }   
-                }
-            }
-            s3.push(' ');
-            s2.push(' ');
-            s1.push(' ');
-        }
+    for line in full_lines {        
+        let l0 = line.chars();
+        let l1 = l0.into_iter().flat_map(|c| numpad.goto(c));
+        let l2 = l1.into_iter().flat_map(|c| dpad_1.goto(c));
+        let l3 = l2.into_iter().flat_map(|c| dpad_2.goto(c));
+        let result = l3.collect_vec();
+        let length = result.len();
+
         let num: usize = line[0..3].parse().unwrap();
         complexity += num * length;
-        println!("{s3}");
-        println!("{s2}");
-        println!("{s1}");
-        println!("{line} (complexity: {} * {})", length, num);
+        //println!("{line} (complexity: {} * {})", length, num);
     }
-
-    let mut test = ['<', '>', 'v', '^'];
-    test.sort();
-    println!("{test:?}");
 
     complexity
 }
@@ -166,6 +161,31 @@ mod day21 {
     #[test]
     fn test1() {
         assert_eq!(part1(SAMPLE), 126384)
+    }
+
+    #[test]
+    fn test029a() {
+        assert_eq!(part1("029A"), 68 * 29)
+    }
+
+    #[test]
+    fn test980a() {
+        assert_eq!(part1("980A"), 60 * 980)
+    }
+
+    #[test]
+    fn test179a() {
+        assert_eq!(part1("179A"), 68 * 179)
+    }
+
+    #[test]
+    fn test456a() {
+        assert_eq!(part1("456A"), 64 * 456)
+    }
+
+    #[test]
+    fn test379a() {
+        assert_eq!(part1("379A"), 64 * 379)
     }
 
     //#[test]

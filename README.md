@@ -35,9 +35,10 @@ Kernighan and it was very helpful.
 16. `**` A*, pathfinding, complex arithmetic
 17. `**` assembly, backpropagation, too big for [Goal Seek](https://www.reddit.com/r/adventofcode/comments/1hga8be/2024_day_17_part_2_excel_goal_seek_had_no_chance/)
 18. `**` pathfinding, bisection
-19. `**` tries, dynamic programming
+19. `**` tries, dynamic programming/memoization
 20. `**` cost analysis (this problem is smaller than it looks), abstraction, even more index trickiness
-21. `  ` robotics, indirection, nested loops...I give up.
+21. `* ` robotics, indirection, nested loops, dynamic programming/memoization, **hard problems**
+22. `  `
 
 # Lessons Learned
 
@@ -109,6 +110,7 @@ I could have simply incremented their x/y positions as a group instead of this o
 [red-black tree](https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html), but it does provide a 
 [BTree](https://doc.rust-lang.org/std/collections/btree_map/struct.BTreeMap.html).
 * I was surprised that BTreeSet produced slightly faster runtimes than HashSet in day 18.
+* Day 21 is **very** difficult.
 
 # References
 
