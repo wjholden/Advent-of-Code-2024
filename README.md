@@ -111,6 +111,9 @@ I could have simply incremented their x/y positions as a group instead of this o
 [BTree](https://doc.rust-lang.org/std/collections/btree_map/struct.BTreeMap.html).
 * I was surprised that BTreeSet produced slightly faster runtimes than HashSet in day 18.
 * Day 21 is **very** difficult.
+* I used JSON to help me model my program in day 21.
+[Serde](https://serde.rs/) makes it easy to deserialize a JSON string into a string.
+I was surprised that it correctly read JSON string elements into the `char` type for my application.
 
 # References
 

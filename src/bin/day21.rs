@@ -125,6 +125,9 @@ fn part1(input: &str) -> usize {
 
     // Part 2: memoize (sequence,depth) -> ?? 
     // https://www.reddit.com/r/adventofcode/comments/1hj2odw/comment/m38fg11/
+    //
+    // Another part 2 solution by others:
+    // https://www.reddit.com/r/adventofcode/comments/1hj2odw/comment/m37qo4f/
 
     for line in full_lines {        
         let l0 = line.chars();
