@@ -38,7 +38,7 @@ Kernighan and it was very helpful.
 19. `**` tries, dynamic programming/memoization
 20. `**` cost analysis (this problem is smaller than it looks), abstraction, even more index trickiness
 21. `* ` robotics, indirection, nested loops, dynamic programming/memoization, **hard problems**
-22. `  `
+22. `* ` arithmetic, complicated instructions, subsequences
 
 # Lessons Learned
 
