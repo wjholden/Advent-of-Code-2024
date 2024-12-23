@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 
-use itertools::Itertools;
-
 fn main() {
     let puzzle = include_str!("../../puzzles/day22.txt");
     println!("Part 1: {}", part1(&puzzle));
