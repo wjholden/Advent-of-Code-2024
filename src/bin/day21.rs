@@ -131,18 +131,87 @@ fn part1(input: &str) -> usize {
 
     for line in full_lines {        
         let l0 = line.chars();
+
         let l1 = l0.into_iter().flat_map(|c| numpad.goto(c));
         let l2 = l1.into_iter().flat_map(|c| dpad_1.goto(c));
         let l3 = l2.into_iter().flat_map(|c| dpad_2.goto(c));
         let result = l3.collect_vec();
         let length = result.len();
 
-        let num: usize = line[0..3].parse().unwrap();
+        let num: usize = line[..3].parse().unwrap();
         complexity += num * length;
         //println!("{line} (complexity: {} * {})", length, num);
     }
 
     complexity
+}
+
+fn part2(input: &str) -> usize {
+    println!("Input: {input}");
+    let full_lines = parse(input);
+
+    let mut root = Layer::new(1);
+    println!("{root:?}");
+    let mut complexity = 0;
+    for line in full_lines {
+        let mut length = 0;
+        for c in line.chars() {
+            length += root.navigate(c);
+        }
+        let num: usize = if line.len() == 4 { line[..3].parse().unwrap() } else { 0 }; // todo remove in prod
+        complexity += length * num;
+    }
+    println!("{root:?}");
+
+    complexity
+}
+
+#[derive(Debug)]
+struct Layer {
+    robot: Robot,
+    child: Option<Box<Layer>>,
+    cache: HashMap<char, usize>
+}
+
+impl Layer {
+    pub fn new(robots: u8) -> Layer {
+        Layer {
+            robot: Robot::new_numeric(),
+            child: Some(Box::new(Layer::new_robot(robots))),
+            cache: HashMap::new()
+        }
+    }
+
+    fn new_robot(depth: u8) -> Layer {
+        if depth == 0 {
+            Layer {
+                robot: Robot::new_directional(),
+                child: Some(Box::new(Layer::new_robot(depth - 1))),
+                cache: HashMap::new()
+            }
+        } else {
+            Layer {
+                robot: Robot::new_directional(),
+                child: None,
+                cache: HashMap::new()
+            }
+        }
+    }
+
+    pub fn navigate(&mut self, c: char) -> usize {
+        if !self.cache.contains_key(&c) {
+            let instructions = self.robot.goto(c);
+            let count = match &mut self.child {
+                Some(child) => {
+                    instructions.into_iter().map(|c| child.navigate(c)).sum()
+                },
+                None => instructions.len()
+            };
+            self.cache.insert(c, count);
+        }
+
+        *self.cache.get(&c).unwrap()
+    }
 }
 
 fn parse(input: &str) -> Vec<&str> {
@@ -191,8 +260,8 @@ mod day21 {
         assert_eq!(part1("379A"), 64 * 379)
     }
 
-    //#[test]
-    //fn test2() {
-        //assert_eq!(part2(SAMPLE), 0)
-    //}   
+    #[test]
+    fn test2() {
+        assert_eq!(part2("A"), 126384)
+    }   
 }

@@ -38,7 +38,8 @@ Kernighan and it was very helpful.
 19. `**` tries, dynamic programming/memoization
 20. `**` cost analysis (this problem is smaller than it looks), abstraction, even more index trickiness
 21. `* ` robotics, indirection, nested loops, dynamic programming/memoization, **hard problems**
-22. `* ` arithmetic, complicated instructions, subsequences
+22. `**` arithmetic, complicated instructions, subsequences, pseudo-random number generators (PRNG), MapReduce
+23. `* ` maximal clique problem
 
 # Lessons Learned
 

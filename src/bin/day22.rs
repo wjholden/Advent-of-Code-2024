@@ -18,30 +18,36 @@ fn part1(input: &str) -> i64 {
     }).sum()
 }
 
+// Reference https://www.reddit.com/r/adventofcode/comments/1hjroap/comment/m390cfi/
+// for a very clean and concurrent solution.
 fn part2(input: &str) -> i64 {
     let secrets: Vec<i64> = input.trim().lines().map(|line| line.parse().unwrap()).collect();
 
     let mut sales = HashMap::new();
 
-    secrets.into_iter().for_each(|secret| {
+    let b = secrets.into_iter().map(|secret| {
         let (prices, changes) = seq(secret, 2000);
         let mut bananas = HashMap::new();
         let n = prices.len();
         for i in 3..n {
-            let sequence = &changes[i-3..=i];
-            let price = prices[i];
-            if !bananas.contains_key(&sequence) {
-                bananas.insert(sequence, price);
+            if let [a,b,c,d] = changes[i-3..=i] {
+                let sequence = (a,b,c,d);
+                let price = prices[i];
+                if !bananas.contains_key(&sequence) {
+                    bananas.insert(sequence, price);
+                }
             }
         }
-        for (k, v) in bananas {
-            let key = k.iter().join(",");
-            //sales.insert(key, v);
-            *sales.entry(key).or_insert(0) += v;
-        }
+        bananas
     });
 
-    *sales.iter().max_by(|a,b| a.1.cmp(&b.1)).unwrap().1
+    for bananas in b {
+        for (k, v) in bananas {
+            *sales.entry(k).or_insert(0) += v;
+        }
+    }
+
+    sales.into_values().max().unwrap()
 }
 
 fn seq(secret: i64, length: usize) -> (Vec<i64>, Vec<i64>) {
