@@ -39,7 +39,7 @@ Kernighan and it was very helpful.
 20. `**` cost analysis (this problem is smaller than it looks), abstraction, even more index trickiness
 21. `* ` robotics, indirection, nested loops, dynamic programming/memoization, **hard problems**
 22. `**` arithmetic, complicated instructions, subsequences, pseudo-random number generators (PRNG), MapReduce
-23. `* ` maximal clique problem
+23. `* ` maximal clique problem, [matrix-based solution](https://www.reddit.com/r/adventofcode/comments/1hkgj5b/comment/m3g3jn2/), coping with NP-hard problems
 
 # Lessons Learned
 

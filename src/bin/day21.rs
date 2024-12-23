@@ -8,7 +8,7 @@ use serde::Deserialize;
 fn main() {
     let puzzle = include_str!("../../puzzles/day21.txt");
     println!("Part 1: {}", part1(&puzzle));
-    // println!("Part 2: {}", part2(&puzzle));
+    println!("Part 2: {}", part2(&puzzle, 25)); // 132135488314896 too low (using 24), 326504066952082 too high
 }
 
 #[derive(Debug, Deserialize)]
@@ -132,13 +132,20 @@ fn part1(input: &str) -> usize {
     for line in full_lines {        
         let l0 = line.chars();
 
-        let l1 = l0.into_iter().flat_map(|c| numpad.goto(c));
-        let l2 = l1.into_iter().flat_map(|c| dpad_1.goto(c));
-        let l3 = l2.into_iter().flat_map(|c| dpad_2.goto(c));
-        let result = l3.collect_vec();
+        let l1 = l0.into_iter().flat_map(|c| numpad.goto(c)).collect_vec();
+        //println!("l1: {l1:?}");
+        let l2 = l1.into_iter().flat_map(|c| dpad_1.goto(c)).collect_vec();
+        //println!("l2: {l2:?}");
+        let l3 = l2.into_iter().flat_map(|c| dpad_2.goto(c)).collect_vec();
+        //println!("l3: {l3:?}");
+        let result = l3;
         let length = result.len();
 
-        let num: usize = line[..3].parse().unwrap();
+        let num = if line.len() == 4 {
+            line[..3].parse().unwrap()
+        } else {
+            1
+        };
         complexity += num * length;
         //println!("{line} (complexity: {} * {})", length, num);
     }
@@ -146,22 +153,25 @@ fn part1(input: &str) -> usize {
     complexity
 }
 
-fn part2(input: &str) -> usize {
-    println!("Input: {input}");
+fn part2(input: &str, robots: usize) -> usize {
     let full_lines = parse(input);
 
-    let mut root = Layer::new(1);
-    println!("{root:?}");
+    let mut root = Layer::new(robots);
+    //println!("{root:?}");
     let mut complexity = 0;
     for line in full_lines {
         let mut length = 0;
         for c in line.chars() {
             length += root.navigate(c);
         }
-        let num: usize = if line.len() == 4 { line[..3].parse().unwrap() } else { 0 }; // todo remove in prod
+        let num = if line.len() == 4 {
+            line[..3].parse().unwrap()
+        } else {
+            1
+        };
         complexity += length * num;
     }
-    println!("{root:?}");
+    //println!("{root:?}");
 
     complexity
 }
@@ -170,11 +180,11 @@ fn part2(input: &str) -> usize {
 struct Layer {
     robot: Robot,
     child: Option<Box<Layer>>,
-    cache: HashMap<char, usize>
+    cache: HashMap<(char, char), usize>
 }
 
 impl Layer {
-    pub fn new(robots: u8) -> Layer {
+    pub fn new(robots: usize) -> Layer {
         Layer {
             robot: Robot::new_numeric(),
             child: Some(Box::new(Layer::new_robot(robots))),
@@ -182,8 +192,8 @@ impl Layer {
         }
     }
 
-    fn new_robot(depth: u8) -> Layer {
-        if depth == 0 {
+    fn new_robot(depth: usize) -> Layer {
+        if depth > 0 {
             Layer {
                 robot: Robot::new_directional(),
                 child: Some(Box::new(Layer::new_robot(depth - 1))),
@@ -199,18 +209,27 @@ impl Layer {
     }
 
     pub fn navigate(&mut self, c: char) -> usize {
-        if !self.cache.contains_key(&c) {
+        //println!("I'm navigating to {c} from {}", self.robot.position);
+        let key = (self.robot.position, c);
+        if !self.cache.contains_key(&key) {
             let instructions = self.robot.goto(c);
             let count = match &mut self.child {
                 Some(child) => {
                     instructions.into_iter().map(|c| child.navigate(c)).sum()
                 },
-                None => instructions.len()
+                None => {
+                    //println!("{key:?}: {instructions:?} ({})", instructions.len());
+                    instructions.len()
+                }
             };
-            self.cache.insert(c, count);
+            self.cache.insert(key, count);
+        } else {
+            //println!("{key:?}: cache hit ({})", self.cache.get(&key).unwrap());
+            // move robot to intended spot
+            self.robot.position = c;
         }
 
-        *self.cache.get(&c).unwrap()
+        *self.cache.get(&key).unwrap()
     }
 }
 
@@ -257,11 +276,23 @@ mod day21 {
 
     #[test]
     fn test379a() {
-        assert_eq!(part1("379A"), 64 * 379)
+        assert_eq!(part1("379A"), 64 * 379);
     }
 
     #[test]
-    fn test2() {
-        assert_eq!(part2("A"), 126384)
+    fn test36() {
+        let test_input = "36";
+        assert_eq!(part1(test_input), part2(test_input, 1))
     }   
+
+    #[test]
+    fn test63() {
+        let test_input = "63";
+        assert_eq!(part1(test_input), part2(test_input, 1))
+    } 
+
+    #[test]
+    fn test2() {
+        assert_eq!(part1(SAMPLE), part2(SAMPLE, 1))
+    }
 }
