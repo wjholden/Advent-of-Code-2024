@@ -1,14 +1,13 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use itertools::{any, Itertools};
+use itertools::Itertools;
 use nalgebra::*;
-use petgraph::{algo::tarjan_scc, graphmap::*};
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day23.txt");
     println!("Part 1: {}", part1_naive(&puzzle));
-    println!("Part 1: {}", part1_matrix(&puzzle));
-    // println!("Part 2: {}", part2(&puzzle));
+    //println!("Part 1: {}", part1_matrix(&puzzle));
+    println!("Part 2: {}", part2(&puzzle));
 }
 
 fn parse(input: &str) -> BTreeMap<&str, BTreeSet<&str>> {
@@ -51,6 +50,7 @@ fn part1_naive(input: &str) -> usize {
     count
 }
 
+#[allow(dead_code)]
 fn part1_matrix(input: &str) -> usize {
     let edges = parse(input);
     let labels = edges.keys().cloned().collect_vec();
@@ -91,18 +91,50 @@ fn part1_matrix(input: &str) -> usize {
     total/2
 }
 
-fn _part1(input: &str) -> usize {
-    let edges: Vec<(&str,&str)> = input.lines().map(|line| (&line[..2], &line[3..])).collect();
+fn part2(input: &str) -> String {
+    let g = parse(input);
     
-    let mut g = UnGraphMap::new();
-    for (u,v) in edges {
-        g.add_edge(u, v, ());
+    let mut longest = BTreeSet::new();
+
+    for (v, neighbors) in g.iter() {
+        if v.starts_with("t") {
+            let mut clique = BTreeSet::new();
+            clique.insert(*v);
+            clique = max_clique(&g, clique, neighbors.clone());
+            if longest.len() < clique.len() {
+                longest = clique;
+            }
+        }
     }
 
-    tarjan_scc(&g).into_iter().filter(|scc| {
-        println!("{scc:?}");
-        any(scc.iter(), |v| v.starts_with("t"))  
-    }).count()
+    longest.iter().join(",")
+}
+
+fn max_clique<'a>(g: &BTreeMap<&'a str, BTreeSet<&'a str>>, clique: BTreeSet<&'a str>, mut candidates: BTreeSet<&'a str>) -> BTreeSet<&'a str> {
+    if candidates.is_empty() {
+        return clique
+    }
+
+    let mut result = BTreeSet::new();
+
+    loop {
+        if let Some(candidate) = candidates.pop_first() {
+            let neighbors = g.get(candidate).unwrap();
+        if clique.is_subset(neighbors) {
+            let mut bigger_clique = clique.clone();
+            bigger_clique.insert(candidate);
+            let smaller_candidates = candidates.intersection(neighbors).copied().collect::<BTreeSet<&str>>();
+            let c = max_clique(g, bigger_clique, smaller_candidates);
+            if result.len() < c.len() {
+                result = c;
+            }
+        }
+        } else {
+            break
+        }
+    }
+
+    return result
 }
 
 #[cfg(test)]
@@ -182,6 +214,6 @@ gg-ii";
  
     #[test]
     fn test2() {
-        //assert_eq!(part2(SAMPLE), 0)
+        assert_eq!(part2(SAMPLE), "co,de,ka,ta")
     }   
 }
