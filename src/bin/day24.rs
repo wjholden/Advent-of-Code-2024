@@ -6,7 +6,7 @@ use pathfinding::prelude::astar;
 fn main() {
     let puzzle = include_str!("../../puzzles/day24.txt");
     println!("Part 1: {}", part1(&puzzle));
-    println!("Part 2: {}", part2(&puzzle));
+    //println!("Part 2: {}", part2(&puzzle));
 }
 
 fn part1(input: &str) -> u64 {
