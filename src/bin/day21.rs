@@ -1,4 +1,3 @@
-use core::panic;
 use std::collections::HashMap;
 
 use itertools::Itertools;
@@ -16,7 +15,7 @@ fn main() {
     // 185361423200856 wrong (using 24)
     // 194712646998324 wrong (using 24)
     // 182825219408496 wrong (using 24)
-    // 182825219408496
+    // 159684145150108 (finally!!!)
 }
 
 #[derive(Debug, Deserialize)]
@@ -85,21 +84,10 @@ impl Robot {
         let start = self.position;
 
         assert!(self.edges.contains_key(&destination));
-        //if !self.edges.contains_key(&destination) {
-        //    panic!("Destination {destination} is not in our keypad ({:?}).", self.edges.keys());
-        //}
 
         if self.position == destination {
             return vec!['A']
         }
-
-        // Don't bother with pathfinding if we have a cached path.
-        //if let Some(path) = self.manual_path.get(&(self.position, destination)) {
-        //    let mut path = path.clone();
-        //    path.push('A');
-        //    self.position = destination;
-        //    return path
-        //}
 
         let successors = |x: &char| {
             let mut adj = vec![];
@@ -139,32 +127,25 @@ impl Robot {
             vertical_first = true;
         }
 
-        //if instructions.contains(&'v') && instructions.contains(&'>') {
-        //    vertical_first = true;
-        //}
-        if destination == '<' {
+        // Apparently this was it...
+        if self.position != '<' && instructions.contains(&'>') {
             vertical_first = true;
         }
 
-        //if self.position == '<' {
-        //    vertical_first = false;
-        //}
-        //if destination == '>' {
-        //    vertical_first = false;
-        //}
+        if destination == '<' {
+            vertical_first = true;
+        }
 
         if vertical_first {
             instructions.reverse();
         }
 
+        // I guess we finally got the directions perfect. This was a very difficult puzzle...
+        assert_eq!(instructions, *self.manual_path.get(&(self.position, destination)).unwrap());
+
         if let Some(path) = self.manual_path.get(&(self.position, destination)) {
             if instructions != *path {
-                println!("We disagree on the path from {} to {}.", self.position, destination);
-                println!("Got: {:?}", instructions);
-                println!("Want: {:?}", path);
-                instructions.reverse();
-            } else {
-                println!("Found the expected path from {} to {} in the cache.", self.position, destination);
+                println!("We disagree on the path from {} to {} (got: {:?}, want: {:?}).", self.position, destination, instructions, path);
             }
         } else {
             println!("Did not find the expected path in the cache from {} to {destination}.", self.position);
@@ -200,11 +181,8 @@ fn part1(input: &str) -> usize {
         let l0 = line.chars();
 
         let l1 = l0.into_iter().flat_map(|c| numpad.goto(c)).collect_vec();
-        //println!("l1: {l1:?}");
         let l2 = l1.into_iter().flat_map(|c| dpad_1.goto(c)).collect_vec();
-        //println!("l2: {l2:?}");
         let l3 = l2.into_iter().flat_map(|c| dpad_2.goto(c)).collect_vec();
-        //println!("l3: {l3:?}");
         let result = l3;
         let length = result.len();
 
@@ -214,7 +192,6 @@ fn part1(input: &str) -> usize {
             1
         };
         complexity += num * length;
-        //println!("{line} (complexity: {} * {})", length, num);
     }
 
     complexity
@@ -224,7 +201,6 @@ fn part2(input: &str, robots: usize) -> usize {
     let full_lines = parse(input);
 
     let mut root = Layer::new(robots);
-    //println!("{root:?}");
     let mut complexity = 0;
     for line in full_lines {
         let mut length = 0;
@@ -238,7 +214,6 @@ fn part2(input: &str, robots: usize) -> usize {
         };
         complexity += length * num;
     }
-    //println!("{root:?}");
 
     complexity
 }
@@ -276,7 +251,6 @@ impl Layer {
     }
 
     pub fn navigate(&mut self, c: char) -> usize {
-        //println!("I'm navigating to {c} from {}", self.robot.position);
         let key = (self.robot.position, c);
         if !self.cache.contains_key(&key) {
             let instructions = self.robot.goto(c);
@@ -285,13 +259,11 @@ impl Layer {
                     instructions.into_iter().map(|c| child.navigate(c)).sum()
                 },
                 None => {
-                    //println!("{key:?}: {instructions:?} ({})", instructions.len());
                     instructions.len()
                 }
             };
             self.cache.insert(key, count);
         } else {
-            //println!("{key:?}: cache hit ({})", self.cache.get(&key).unwrap());
             // move robot to intended spot
             self.robot.position = c;
         }
