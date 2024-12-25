@@ -8,7 +8,15 @@ use serde::Deserialize;
 fn main() {
     let puzzle = include_str!("../../puzzles/day21.txt");
     println!("Part 1: {}", part1(&puzzle));
-    println!("Part 2: {}", part2(&puzzle, 25)); // 132135488314896 too low (using 24), 326504066952082 too high
+    println!("Part 2: {}", part2(&puzzle, 24));
+    // 132135488314896 too low (using 24),
+    // 326504066952082 too high
+    // 455243322482702 too high (using 25)
+    // 181865279908592 wrong (using 24)
+    // 185361423200856 wrong (using 24)
+    // 194712646998324 wrong (using 24)
+    // 182825219408496 wrong (using 24)
+    // 182825219408496
 }
 
 #[derive(Debug, Deserialize)]
@@ -28,6 +36,14 @@ struct Robot {
     position: char,
     edges: HashMap<char, Vec<char>>, // adjacency list for graph exploration
     directions: HashMap<(char, char), char>,
+    manual_path: HashMap<(char, char), Vec<char>>
+}
+
+#[derive(Debug, Deserialize)]
+struct ManualPath {
+    src: char,
+    dst: char,
+    path: Vec<char>
 }
 
 impl Robot {
@@ -43,10 +59,17 @@ impl Robot {
             }
             edges.insert(key.label, adj);
         }
+        let manual_directions: Vec<ManualPath> = serde_json::from_str(include_str!("manual_directions.json")).unwrap();
+        let mut manual_path = HashMap::new();
+        for d in manual_directions {
+            manual_path.insert((d.src, d.dst), d.path);
+        }
+
         Robot {
             position: 'A',
             edges, 
-            directions
+            directions,
+            manual_path
         }
     }
 
@@ -60,9 +83,24 @@ impl Robot {
 
     fn goto(&mut self, destination: char) -> Vec<char> {
         let start = self.position;
-        if !self.edges.contains_key(&destination) {
-            panic!("Destination {destination} is not in our keypad ({:?}).", self.edges.keys());
+
+        assert!(self.edges.contains_key(&destination));
+        //if !self.edges.contains_key(&destination) {
+        //    panic!("Destination {destination} is not in our keypad ({:?}).", self.edges.keys());
+        //}
+
+        if self.position == destination {
+            return vec!['A']
         }
+
+        // Don't bother with pathfinding if we have a cached path.
+        //if let Some(path) = self.manual_path.get(&(self.position, destination)) {
+        //    let mut path = path.clone();
+        //    path.push('A');
+        //    self.position = destination;
+        //    return path
+        //}
+
         let successors = |x: &char| {
             let mut adj = vec![];
             for neighbor in self.edges.get(x).unwrap() {
@@ -96,11 +134,40 @@ impl Robot {
             (destination == '1' || destination == '4' || destination == '7') {
                 vertical_first = true;
         }
-        if instructions.contains(&'v') && instructions.contains(&'>') {
+
+        if self.position == '8' || self.position == '5' || self.position == '2' && instructions.contains(&'>') {
             vertical_first = true;
         }
+
+        //if instructions.contains(&'v') && instructions.contains(&'>') {
+        //    vertical_first = true;
+        //}
+        if destination == '<' {
+            vertical_first = true;
+        }
+
+        //if self.position == '<' {
+        //    vertical_first = false;
+        //}
+        //if destination == '>' {
+        //    vertical_first = false;
+        //}
+
         if vertical_first {
             instructions.reverse();
+        }
+
+        if let Some(path) = self.manual_path.get(&(self.position, destination)) {
+            if instructions != *path {
+                println!("We disagree on the path from {} to {}.", self.position, destination);
+                println!("Got: {:?}", instructions);
+                println!("Want: {:?}", path);
+                instructions.reverse();
+            } else {
+                println!("Found the expected path from {} to {} in the cache.", self.position, destination);
+            }
+        } else {
+            println!("Did not find the expected path in the cache from {} to {destination}.", self.position);
         }
 
         instructions.push('A');
