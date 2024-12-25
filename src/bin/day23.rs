@@ -51,6 +51,8 @@ fn part1_naive(input: &str) -> usize {
 }
 
 #[allow(dead_code)]
+// https://stackoverflow.com/questions/10193228/how-to-find-a-triangle-inside-a-graph
+// https://i11www.iti.kit.edu/extra/publications/sw-fclt-05_wea.pdf
 fn part1_matrix(input: &str) -> usize {
     let edges = parse(input);
     let labels = edges.keys().cloned().collect_vec();
@@ -69,6 +71,7 @@ fn part1_matrix(input: &str) -> usize {
         }
     });
 
+    // https://www.nalgebra.org/docs/user_guide/vectors_and_matrices/
     let m2 = m1.clone() * m1.clone();
     let m3 = m2.component_mul(&m1);
 
