@@ -41,6 +41,7 @@ Kernighan and it was very helpful.
 22. `**` arithmetic, complicated instructions, subsequences, pseudo-random number generators (PRNG), MapReduce
 23. `* ` maximal clique problem, [matrix-based solution](https://www.reddit.com/r/adventofcode/comments/1hkgj5b/comment/m3g3jn2/), coping with NP-hard problems
 24. `* ` logic gates
+25. `* ` combinations
 
 # Lessons Learned
 
