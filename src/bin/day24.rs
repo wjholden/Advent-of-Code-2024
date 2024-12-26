@@ -152,6 +152,7 @@ fn _part2_astar(input: &str) -> String {
     String::from("test")
 }
 
+#[allow(dead_code)]
 fn investigate(x: &str, expect: u8, literals: &BTreeMap<&str, u8>, gates: &BTreeMap<&str, Gate>) {
     let got = literals.get(x).unwrap();
     if !gates.contains_key(x) {
@@ -224,6 +225,7 @@ struct Gate {
     right: String,
 }
 
+#[allow(dead_code)]
 #[derive(Clone)]
 struct Adder {
     literals: BTreeMap<String, u8>,
@@ -231,6 +233,7 @@ struct Adder {
     pairs: Vec<(String, String)>,
 }
 
+#[allow(dead_code)]
 impl Adder {
     fn new(input: &str) -> Adder {
         let mut s = input.split("\n\n");
