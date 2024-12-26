@@ -1,12 +1,13 @@
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, fs::File, io::{BufWriter, Write}};
 
 use itertools::Itertools;
 use pathfinding::prelude::astar;
 
-fn main() {
+fn main() -> Result<(), std::io::Error> {
     let puzzle = include_str!("../../puzzles/day24.txt");
     println!("Part 1: {}", part1(&puzzle));
-    //println!("Part 2: {}", part2(&puzzle));
+    println!("Part 2: {} (solved manually with GraphViz; see file day24.dot)", part2(&puzzle)?);
+    Ok(())
 }
 
 fn part1(input: &str) -> u64 {
@@ -16,14 +17,68 @@ fn part1(input: &str) -> u64 {
     for literal in gates.keys().rev() {
         if literal.starts_with("z") {
             let value = eval(literal, &mut literals, &gates) as u64;
-            println!("{literal} = {value}");
             result = (result << 1) | value;
         }
     }
     result
 }
 
-fn part2(input: &str) -> String {
+fn part2(input: &str) -> Result<String, std::io::Error> {
+    let (_literals, mut gates) = parse(input);
+
+    for (s1, s2) in [("hmt", "z18"), ("bfq", "z27"), ("hkh", "z31"), ("fjp", "bng")] {
+        let v1 = gates.get(s1).unwrap().clone();
+        let v2 = gates.get(s2).unwrap().clone();
+        gates.insert(s2, v1);
+        gates.insert(s1, v2);    
+    }
+
+    let f = File::create("day24.dot")?;
+    let mut out = BufWriter::new(f);
+    
+    writeln!(out, "digraph {{")?;
+    writeln!(out, "  rankdir=\"LR\";")?;
+    writeln!(out, "  node [style=filled];")?;
+    for (output, current_gate) in gates.iter() {
+        for parent in [&current_gate.left, &current_gate.right] {
+            writeln!(out, "  {parent} -> {output};")?;
+
+            let mut color = if let Some(parent_gate) = gates.get(parent.as_str()) {
+                match (parent_gate.instruction, current_gate.instruction) {
+                    (Instruction::And, Instruction::And) => "red", // AND gates should not connect
+                    (Instruction::And, Instruction::Or) => "blue",
+                    (Instruction::And, Instruction::Xor) => "blue",
+                    (Instruction::Or, Instruction::And) => "blue",
+                    (Instruction::Or, Instruction::Or) => "red", // OR gates should not connect
+                    (Instruction::Or, Instruction::Xor) => "blue",
+                    (Instruction::Xor, Instruction::And) => "blue",
+                    (Instruction::Xor, Instruction::Or) => "red",
+                    (Instruction::Xor, Instruction::Xor) => "blue",
+                }
+            } else {
+                match current_gate.instruction {
+                    Instruction::And => "blue",
+                    Instruction::Or => "red", // literals feed AND and XOR gates, not OR.
+                    Instruction::Xor => "blue",
+                }
+            };
+
+            if output.starts_with("z") && current_gate.instruction != Instruction::Xor {
+                color = "orange";
+            }
+    
+            if color != "blue" {
+                writeln!(out, "  {output} [color=\"{color}\"];")?;    
+            }
+        }
+        writeln!(out, "  {output} [label=\"{:?} {output}\"];", current_gate.instruction)?;    
+    }
+    writeln!(out, "}}")?;
+
+    Ok(["hmt", "z18", "bfq", "z27", "hkh", "z31", "fjp", "bng"].iter().sorted().join(","))
+}
+
+fn _part2_astar(input: &str) -> String {
     let mut adder = Adder::new(input);
     adder.set_one_zero();
     let adder = adder;
@@ -97,30 +152,6 @@ fn part2(input: &str) -> String {
     String::from("test")
 }
 
-fn _part2(input: &str) -> String {
-    let (mut literals, gates) = parse(input);
-
-    for (label, literal) in literals.iter_mut() {
-        if label.starts_with("x") {
-            *literal = 1;
-        } else {
-            *literal = 0;
-        }
-    }
-    println!("{literals:?}");
-
-    for literal in gates.keys().rev() {
-        if literal.starts_with("z") {
-            let value = eval(literal, &mut literals, &gates);
-            if value != 1 {
-                investigate(&literal, 1, &literals, &gates);
-            }
-        }
-    }
-
-    String::from("test")
-}
-
 fn investigate(x: &str, expect: u8, literals: &BTreeMap<&str, u8>, gates: &BTreeMap<&str, Gate>) {
     let got = literals.get(x).unwrap();
     if !gates.contains_key(x) {
@@ -179,7 +210,7 @@ fn eval<'a>(
     result
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Instruction {
     And,
     Or,

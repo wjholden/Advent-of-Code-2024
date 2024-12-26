@@ -23,3 +23,7 @@ puzzles/
 
 # RustRover IDE settings
 /.idea
+
+
+# Day 24 GraphViz markup
+day24.dot

@@ -2,19 +2,6 @@
 
 Rust!
 
-Third time's the charm. I first attempted Rust in 2021 or so but quickly realized
-that this wasn't a language I could easily pick up. If you already know C++,
-Java, C#, or maybe JavaScript and Go then any of those languages are pretty
-learnable. Likewise, if you're already comfortable with Julia then Python should
-feel pretty easy.
-
-Rust is different. The borrow checker and match statement are like nothing I had
-ever seen before. I read most of the Rust Book and also most of Rust By Example,
-both of which require some effort to get through. Still, I learned the hard way
-(by naïvely using *Mathematica* cold on AoC years ago) that it pays to read a
-book first. Last year, I read *The Go Programming Language* by Donovan and
-Kernighan and it was very helpful.
-
 # Daily Themes and Stars
 
 1. `**` programming basics: parsing input, loops, sorting...this is day 1?
@@ -37,11 +24,11 @@ Kernighan and it was very helpful.
 18. `**` pathfinding, bisection
 19. `**` tries, dynamic programming/memoization
 20. `**` cost analysis (this problem is smaller than it looks), abstraction, even more index trickiness
-21. `* ` robotics, indirection, nested loops, dynamic programming/memoization, **hard problems**
+21. `**` robotics, indirection, nested loops, dynamic programming/memoization, **hard problems**
 22. `**` arithmetic, complicated instructions, subsequences, pseudo-random number generators (PRNG), MapReduce
-23. `* ` maximal clique problem, [matrix-based solution](https://www.reddit.com/r/adventofcode/comments/1hkgj5b/comment/m3g3jn2/), coping with NP-hard problems
-24. `* ` logic gates
-25. `* ` combinations
+23. `**` maximal clique problem, [matrix-based solution](https://www.reddit.com/r/adventofcode/comments/1hkgj5b/comment/m3g3jn2/), coping with NP-hard problems
+24. `**` logic gates
+25. `**` combinations
 
 # Lessons Learned
 
@@ -113,10 +100,13 @@ I could have simply incremented their x/y positions as a group instead of this o
 [red-black tree](https://docs.oracle.com/javase/8/docs/api/java/util/TreeMap.html), but it does provide a 
 [BTree](https://doc.rust-lang.org/std/collections/btree_map/struct.BTreeMap.html).
 * I was surprised that BTreeSet produced slightly faster runtimes than HashSet in day 18.
-* Day 21 is **very** difficult.
-* I used JSON to help me model my program in day 21.
+* Day 21 is **very** difficult. I resorted to modeling the button presses manually using JSON.
 [Serde](https://serde.rs/) makes it easy to deserialize a JSON string into a string.
 I was surprised that it correctly read JSON string elements into the `char` type for my application.
+* I tried unsuccessfully to reduce day 24 to A*, much like the 8-piece puzzle problem.
+I still think this method could have worked, but ${222 \choose 2}^4$ is a very large search space.
+I solved day 24 by rendering the logic gates with GraphViz, learning how an adder works,
+and spot-the-difference troubleshooting.
 
 # References
 
