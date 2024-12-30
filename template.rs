@@ -1,5 +1,5 @@
 fn main() {
-    let puzzle = include_str!("../../puzzles/day99.txt");
+    let puzzle = include_str!("../../puzzles/day99.txt").trim();
     println!("Part 1: {}", part1(&puzzle));
     // println!("Part 2: {}", part2(&puzzle));
 }
