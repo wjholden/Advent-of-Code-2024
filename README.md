@@ -107,6 +107,7 @@ I was surprised that it correctly read JSON string elements into the `char` type
 I still think this method could have worked, but ${222 \choose 2}^4$ is a very large search space.
 I solved day 24 by rendering the logic gates with GraphViz, learning how an adder works,
 and spot-the-difference troubleshooting.
+* You can reference named regex capture groups with square brackets (see day 3).
 
 # References
 

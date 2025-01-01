@@ -10,8 +10,8 @@ fn main() {
 fn part1(input: &str) -> i32 {
     let re = Regex::new(r"mul\((?P<x>\d+),(?P<y>\d+)\)").unwrap();
     re.captures_iter(input).map(|cap| {
-        let x = cap.name("x").unwrap().as_str();
-        let y = cap.name("y").unwrap().as_str();
+        let x = &cap["x"];
+        let y = &cap["y"];
         (x.parse::<i32>().unwrap(), y.parse::<i32>().unwrap())
     }).map(|(x,y)| x * y).sum()
 }
