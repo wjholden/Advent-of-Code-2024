@@ -17,8 +17,8 @@ fn parse(input: &str) -> (HashMap<(u16,u16), Ordering>,Vec<&str>) {
     let re = Regex::new(r"(?P<x>\d{2})\|(?P<y>\d{2})").unwrap();
     let mut rules = HashMap::new();
     re.captures_iter(s[0]).for_each(|cap| {
-        let x = cap.name("x").expect("x").as_str();
-        let y = cap.name("y").expect("y").as_str();
+        let x = &cap["x"];
+        let y = &cap["y"];
         let x = x.parse().unwrap();
         let y = y.parse().unwrap();
         rules.insert((x,y), Ordering::Less);
@@ -54,8 +54,6 @@ fn solve(input: &str) -> (u16,u16) {
 
 #[cfg(test)]
 mod day05 {
-    use std::assert_eq;
-
     use super::*;
 
     const SAMPLE: &str = "47|53

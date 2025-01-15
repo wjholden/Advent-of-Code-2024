@@ -5,9 +5,9 @@ use nalgebra::*;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day23.txt");
-    println!("Part 1: {}", part1_naive(&puzzle));
+    println!("Part 1: {}", part1_naive(puzzle));
     //println!("Part 1: {}", part1_matrix(&puzzle));
-    println!("Part 2: {}", part2(&puzzle));
+    println!("Part 2: {}", part2(puzzle));
 }
 
 fn parse(input: &str) -> BTreeMap<&str, BTreeSet<&str>> {
@@ -15,8 +15,8 @@ fn parse(input: &str) -> BTreeMap<&str, BTreeSet<&str>> {
     for line in input.lines() {
         let u = &line[..2];
         let v = &line[3..];
-        edges.entry(u).or_insert(BTreeSet::new()).insert(v);
-        edges.entry(v).or_insert(BTreeSet::new()).insert(u);
+        edges.entry(u).or_default().insert(v);
+        edges.entry(v).or_default().insert(u);
     }
     edges
 }
@@ -120,9 +120,8 @@ fn max_clique<'a>(g: &BTreeMap<&'a str, BTreeSet<&'a str>>, clique: BTreeSet<&'a
 
     let mut result = BTreeSet::new();
 
-    loop {
-        if let Some(candidate) = candidates.pop_first() {
-            let neighbors = g.get(candidate).unwrap();
+    while let Some(candidate) = candidates.pop_first() {
+        let neighbors = g.get(candidate).unwrap();
         if clique.is_subset(neighbors) {
             let mut bigger_clique = clique.clone();
             bigger_clique.insert(candidate);
@@ -132,12 +131,9 @@ fn max_clique<'a>(g: &BTreeMap<&'a str, BTreeSet<&'a str>>, clique: BTreeSet<&'a
                 result = c;
             }
         }
-        } else {
-            break
-        }
     }
 
-    return result
+    result
 }
 
 #[cfg(test)]

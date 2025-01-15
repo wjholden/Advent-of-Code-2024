@@ -10,14 +10,9 @@ fn parse(x: &str) -> (Vec<i32>, Vec<i32>) {
     let mut iterator = x.split_whitespace();
     let mut list1 = Vec::new();
     let mut list2 = Vec::new();
-    loop {
-        match (iterator.next(), iterator.next()) {
-            (Some(i), Some(j)) => {
-                list1.push(i.parse().unwrap());
-                list2.push(j.parse().unwrap());
-            },
-            _ => break
-        }
+    while let (Some(i), Some(j)) = (iterator.next(), iterator.next()) {
+        list1.push(i.parse().unwrap());
+        list2.push(j.parse().unwrap());
     }
     list1.sort();
     list2.sort();
@@ -29,7 +24,7 @@ fn part1(x: &str) -> i32 {
     zip(list1, list2).map(|(i,j)| (i-j).abs()).sum()
 }
 
-fn tally(v: &Vec<i32>) -> HashMap<i32, i32> {
+fn tally(v: &[i32]) -> HashMap<i32, i32> {
     let mut h = HashMap::new();
     for i in v.iter() {
         *h.entry(*i).or_insert(0) += 1
@@ -55,8 +50,6 @@ fn part2(x: &str) -> i32 {
 
 #[cfg(test)]
 mod day01 {
-    use std::assert_eq;
-
     use super::*;
 
     const SAMPLE: &str = "3   4

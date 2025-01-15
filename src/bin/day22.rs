@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day22.txt");
-    println!("Part 1: {}", part1(&puzzle));
-    println!("Part 2: {}", part2(&puzzle));
+    println!("Part 1: {}", part1(puzzle));
+    println!("Part 2: {}", part2(puzzle));
 }
 
 fn part1(input: &str) -> i64 {
@@ -23,7 +23,7 @@ fn part2(input: &str) -> i64 {
 
     let mut sales = HashMap::new();
 
-    let b = secrets.into_iter().map(|secret| {
+    secrets.into_iter().map(|secret| {
         let (prices, changes) = seq(secret, 2000);
         let mut bananas = HashMap::new();
         let n = prices.len();
@@ -31,19 +31,15 @@ fn part2(input: &str) -> i64 {
             if let [a,b,c,d] = changes[i-3..=i] {
                 let sequence = (a,b,c,d);
                 let price = prices[i];
-                if !bananas.contains_key(&sequence) {
-                    bananas.insert(sequence, price);
-                }
+                bananas.entry(sequence).or_insert(price);
             }
         }
         bananas
-    });
-
-    for bananas in b {
+    }).for_each(|bananas| {
         for (k, v) in bananas {
             *sales.entry(k).or_insert(0) += v;
         }
-    }
+    });
 
     sales.into_values().max().unwrap()
 }

@@ -2,7 +2,7 @@ use std::{fs, iter::zip};
 
 fn main() {
     let puzzle = fs::read_to_string("puzzles/day02.txt").unwrap();
-    let p = parse(&puzzle.trim());
+    let p = parse(puzzle.trim());
     println!("Part 1: {}", part1(&p));
     println!("Part 2: {}", part2_so_annoyed(&p));
 }
@@ -30,13 +30,13 @@ fn is_row_safe(row: &[i32]) -> bool {
     true
 }
 
-fn part1(input: &Vec<Vec<i32>>) -> usize {
+fn part1(input: &[Vec<i32>]) -> usize {
     input.iter().filter(|&row| is_row_safe(row)).count()
 }
 
 // Geez. The stupid approach actually works. What's that thing they say about
 // premature optimization?
-fn part2_so_annoyed(input: &Vec<Vec<i32>>) -> usize {
+fn part2_so_annoyed(input: &[Vec<i32>]) -> usize {
     input.iter().filter(|&row| {
         for i in 0..row.len() {
             let left = &row[..i];
@@ -52,8 +52,6 @@ fn part2_so_annoyed(input: &Vec<Vec<i32>>) -> usize {
 
 #[cfg(test)]
 mod day02 {
-    use std::assert_eq;
-
     use super::*;
 
     const SAMPLE: &str = "7 6 4 2 1

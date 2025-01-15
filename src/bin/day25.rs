@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day25.txt");
-    println!("Part 1: {}", part1(&puzzle));
+    println!("Part 1: {}", part1(puzzle));
 }
 
 fn part1(input: &str) -> usize {
@@ -41,11 +41,7 @@ fn parse(input: &str) -> (Vec<KL> , Vec<KL>) {
             false => '#'
         };
         for (i, row) in group.lines().enumerate() {
-            let height = if is_lock {
-                7 - i
-            } else {
-                7 - i
-            };
+            let height = 7 - i;
             for (j, c) in row.char_indices() {
                 if c == sentinel && height > h[j] {
                     h[j] = height;

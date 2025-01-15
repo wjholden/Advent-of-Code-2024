@@ -4,7 +4,7 @@ use pathfinding::prelude::dijkstra;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day18.txt");
-    let obstacles = parse(&puzzle);
+    let obstacles = parse(puzzle);
     let (_path, distance) = part1(&obstacles, 1024, (70,70)).unwrap();
     println!("Part 1: {}", distance);
     println!("Part 2: {}", part2(&obstacles, 1024, (70,70)));

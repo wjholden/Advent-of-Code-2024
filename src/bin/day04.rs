@@ -44,14 +44,14 @@ fn part2(input: &str) -> i32 {
     count
 }
 
-fn explore(haystack: &Vec<Vec<char>>, row: i32, col: i32) -> i32 {
+fn explore(haystack: &[Vec<char>], row: i32, col: i32) -> i32 {
     let mut count = 0;
     for dr in -1..=1 {
         for dc in -1..=1 {
             if dr == 0 && dc == 0 {
                 continue
             }
-            if let Some(_) = search1(haystack, row, col, dr, dc) {
+            if search1(haystack, row, col, dr, dc).is_some() {
                 count += 1
             }
         }
@@ -59,7 +59,7 @@ fn explore(haystack: &Vec<Vec<char>>, row: i32, col: i32) -> i32 {
     count
 }
 
-fn search1(haystack: &Vec<Vec<char>>, row: i32, col: i32, dr: i32, dc: i32) -> Option<()> {
+fn search1(haystack: &[Vec<char>], row: i32, col: i32, dr: i32, dc: i32) -> Option<()> {
     let rows = haystack.len() as i32;
     let cols = haystack[0].len() as i32;
     for radius in 0..=3 {
@@ -81,8 +81,6 @@ fn search1(haystack: &Vec<Vec<char>>, row: i32, col: i32, dr: i32, dc: i32) -> O
 
 #[cfg(test)]
 mod day04 {
-    use std::assert_eq;
-
     use super::*;
 
     const SAMPLE: &str = "MMMSXXMASM

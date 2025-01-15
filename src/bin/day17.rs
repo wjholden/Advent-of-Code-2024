@@ -2,8 +2,8 @@ use itertools::Itertools;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day17.txt");
-    println!("Part 1: {}", part1(&puzzle));
-    println!("Part 2: {}", part2(&puzzle));
+    println!("Part 1: {}", part1(puzzle));
+    println!("Part 2: {}", part2(puzzle));
 }
 
 fn part1(input: &str) -> String {
@@ -111,16 +111,16 @@ impl Computer {
             4 => self.a,
             5 => self.b,
             6 => self.c,
-            other @ _ => panic!("illegal operand {other}"),
+            other => panic!("illegal operand {other}"),
         }
     }
 
     fn adv(&mut self, operand: usize) {
-        self.a = self.a / (1 << self.combo_argument(operand))
+        self.a /= 1 << self.combo_argument(operand)
     }
 
     fn bxl(&mut self, operand: usize) {
-        self.b = self.b ^ operand
+        self.b ^= operand
     }
 
     fn bst(&mut self, operand: usize) {
@@ -139,11 +139,11 @@ impl Computer {
     }
 
     fn bxc(&mut self) {
-        self.b = self.b ^ self.c
+        self.b ^= self.c
     }
 
     fn out(&mut self, operand: usize) -> usize {
-        return self.combo_argument(operand) % 8
+        self.combo_argument(operand) % 8
     }
 
     fn bvd(&mut self, operand: usize) {

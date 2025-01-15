@@ -6,16 +6,8 @@ use serde::Deserialize;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day21.txt");
-    println!("Part 1: {}", part1(&puzzle));
-    println!("Part 2: {}", part2(&puzzle, 24));
-    // 132135488314896 too low (using 24),
-    // 326504066952082 too high
-    // 455243322482702 too high (using 25)
-    // 181865279908592 wrong (using 24)
-    // 185361423200856 wrong (using 24)
-    // 194712646998324 wrong (using 24)
-    // 182825219408496 wrong (using 24)
-    // 159684145150108 (finally!!!)
+    println!("Part 1: {}", part1(puzzle));
+    println!("Part 2: {}", part2(puzzle, 24));
 }
 
 #[derive(Debug, Deserialize)]
@@ -252,23 +244,19 @@ impl Layer {
 
     pub fn navigate(&mut self, c: char) -> usize {
         let key = (self.robot.position, c);
-        if !self.cache.contains_key(&key) {
-            let instructions = self.robot.goto(c);
-            let count = match &mut self.child {
-                Some(child) => {
-                    instructions.into_iter().map(|c| child.navigate(c)).sum()
-                },
-                None => {
-                    instructions.len()
-                }
-            };
-            self.cache.insert(key, count);
-        } else {
-            // move robot to intended spot
+
+        // Move the robot to the intended spot on cache hits.
+        if self.cache.contains_key(&key) {
             self.robot.position = c;
         }
 
-        *self.cache.get(&key).unwrap()
+        *self.cache.entry(key).or_insert({
+            let instructions = self.robot.goto(c);
+            match &mut self.child {
+                Some(child) => instructions.into_iter().map(|c| child.navigate(c)).sum(),
+                None => instructions.len()
+            }
+        })
     }
 }
 

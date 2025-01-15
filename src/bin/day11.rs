@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day11.txt");
-    println!("Part 1: {}", part1(&puzzle, 25));
-    println!("Part 2: {}", part2(&puzzle, 75));
+    println!("Part 1: {}", part1(puzzle, 25));
+    println!("Part 2: {}", part2(puzzle, 75));
 }
 
 fn part1(input: &str, blinks: u64) -> usize {

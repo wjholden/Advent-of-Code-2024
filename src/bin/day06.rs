@@ -100,7 +100,6 @@ fn solve(input: &str) -> (usize, usize) {
     };
     let mut world = World::new();
     input
-        .trim()
         .split_whitespace()
         .enumerate()
         .for_each(|(y, line)| {
@@ -121,8 +120,9 @@ fn solve(input: &str) -> (usize, usize) {
                     },
                 );
             });
-        });
-
+        }
+    );
+        
     let mut visited: HashSet<(i16, i16)> = HashSet::new();
     let mut part2: HashSet<(i16, i16)> = HashSet::new();
     let guard_initial = (guard.x, guard.y);
@@ -132,15 +132,12 @@ fn solve(input: &str) -> (usize, usize) {
         // Part 2: try finding a cycle
         let next = guard.next();
         if next != guard_initial && !part2.contains(&next) {
-            match world.get(&next) {
-                Some(MapElement::Empty) => {
-                    world.insert(next, MapElement::Obstruction);
-                    if is_cyclic_ttl(&world, guard_initial.0, guard_initial.1) {
-                        part2.insert(next);
-                    }
-                    world.insert(next, MapElement::Empty);
+            if let Some(MapElement::Empty) = world.get(&next) {
+                world.insert(next, MapElement::Obstruction);
+                if is_cyclic_ttl(&world, guard_initial.0, guard_initial.1, max_x, max_y) {
+                    part2.insert(next);
                 }
-                _ => (),
+                world.insert(next, MapElement::Empty);
             }
         }
 
@@ -165,10 +162,10 @@ fn is_cyclic(world: &World, xi: i16, yi: i16) -> bool {
     };
     let mut path: HashSet<Guard> = HashSet::new();
     loop {
-        if path.insert(guard.clone()) == false {
+        if !path.insert(guard) {
             return true;
         }
-        if guard.go(world) == false {
+        if !guard.go(world) {
             return false;
         }
     }
@@ -176,7 +173,7 @@ fn is_cyclic(world: &World, xi: i16, yi: i16) -> bool {
 
 // You wouldn't think this would be faster, but you save so much copying and hashing
 // that just letting the CPU go brr is better.
-fn is_cyclic_ttl(world: &World, xi: i16, yi: i16) -> bool {
+fn is_cyclic_ttl(world: &World, xi: i16, yi: i16, max_x: i16, max_y: i16) -> bool {
     let mut guard = Guard {
         x: xi,
         y: yi,
@@ -185,8 +182,14 @@ fn is_cyclic_ttl(world: &World, xi: i16, yi: i16) -> bool {
     };
     let mut steps = 0;
     while steps < world.len() {
-        if guard.go(world) == false {
-            return false;
+        if !guard.go(world) {
+            return false
+        }
+        // If the guard escaped in the -x or -y direction then we are finished.
+        // 
+        // This surprisingly doesn't make much (any?) performance difference...
+        if guard.x < 0 || guard.x > max_x || guard.y < 0 || guard.y > max_y {
+            return false
         }
         steps += 1;
     }
@@ -195,8 +198,6 @@ fn is_cyclic_ttl(world: &World, xi: i16, yi: i16) -> bool {
 
 #[cfg(test)]
 mod day06 {
-    use std::assert_eq;
-
     use super::*;
 
     const SAMPLE: &str = "....#.....

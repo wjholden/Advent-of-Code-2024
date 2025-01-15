@@ -4,7 +4,7 @@ use itertools::Itertools;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day19.txt");
-    let (part1, part2) = solve(&puzzle);
+    let (part1, part2) = solve(puzzle);
     println!("Part 1: {}", part1);
     println!("Part 2: {}", part2);
 }
@@ -32,7 +32,7 @@ fn search<'a>(trie: &TrieNode, chars: &'a [char], cache: &mut BTreeMap<&'a [char
         return *cache.get(chars).unwrap();
     }
 
-    if chars.len() == 0 {
+    if chars.is_empty() {
         return 1
     }
     let lengths = trie.matches(chars);
@@ -41,7 +41,7 @@ fn search<'a>(trie: &TrieNode, chars: &'a [char], cache: &mut BTreeMap<&'a [char
         let chars = &chars[*matched_length..];
         let x = search(trie, chars, cache);
         if x > 0 {
-            solution = solution + x;
+            solution += x;
         }
     }
 

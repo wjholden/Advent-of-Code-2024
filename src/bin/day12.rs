@@ -16,7 +16,7 @@ fn solve(grid: &Grid<char>) -> (usize, usize) {
 
     for (row, col) in (0..grid.rows()).cartesian_product(0..grid.cols()) {
         if !explored.contains(&(row, col)) {
-            let region = explore(&grid, row, col);
+            let region = explore(grid, row, col);
             explored.extend(&region);
             regions.push(region);
         }
@@ -140,7 +140,7 @@ fn edges(region: &HashSet<(usize, usize)>) -> usize {
     let count_edges = move |mut set: HashSet<(i32, i32)>, horizontal| {
         let mut count = 0;
         while !set.is_empty() {
-            let origin = set.iter().next().unwrap().clone();
+            let origin = *set.iter().next().unwrap();
             set.remove(&origin);
             let (mut r_min, mut c_min) = origin;
             let (mut r_max, mut c_max) = origin;

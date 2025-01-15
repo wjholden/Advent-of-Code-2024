@@ -1,9 +1,24 @@
-use std::fs;
+use std::{fs, num::ParseIntError, str::FromStr};
 use rayon::prelude::*;
 
 struct Calibration {
     res: u64,
     val: Vec<u64>
+}
+
+impl FromStr for Calibration {
+    type Err = ParseIntError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let line: Vec<&str> = s.split(":").collect();
+        assert_eq!(line.len(), 2);
+        let res = line[0].parse()?;
+        let val = line[1].split_whitespace().map(|s| s.parse().unwrap()).collect();
+        Ok(Self {
+            res,
+            val,
+        })
+    }
 }
 
 // Why is this solution so much faster than mine? 
@@ -30,7 +45,7 @@ fn part2(calibrations: &[Calibration]) -> u64 {
 }
 
 fn is_solvable1(left: u64, right: &[u64], target: u64) -> bool {
-    if right.len() == 0 {
+    if right.is_empty() {
         left == target
     } else if left > target {
         false
@@ -42,7 +57,7 @@ fn is_solvable1(left: u64, right: &[u64], target: u64) -> bool {
 }
 
 fn is_solvable2(left: u64, right: &[u64], target: u64) -> bool {
-    if right.len() == 0 {
+    if right.is_empty() {
         left == target
     } else if left > target {
         false // our operators only increase the value, so stop early if we've already overflowed  
@@ -58,22 +73,11 @@ fn is_solvable2(left: u64, right: &[u64], target: u64) -> bool {
 }
 
 fn parse(input: &str) -> Vec<Calibration> {
-    input.trim().split('\n').map(|line| {
-        let line: Vec<&str> = line.split(":").collect();
-        assert_eq!(line.len(), 2);
-        let res = line[0].parse().unwrap();
-        let val = line[1].split_whitespace().into_iter().map(|s| s.parse().unwrap()).collect();
-        Calibration {
-            res,
-            val,
-        }
-    }).collect()
+    input.trim().split('\n').map(|line| Calibration::from_str(line).unwrap()).collect()
 }
 
 #[cfg(test)]
 mod day07 {
-    use std::assert_eq;
-
     use super::*;
 
     const SAMPLE: &str = "190: 10 19

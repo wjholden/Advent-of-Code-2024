@@ -5,8 +5,8 @@ use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day20.txt");
-    println!("Part 1: {}", part1(&puzzle, 100, 2)); // 1511
-    println!("Part 2: {}", part1(&puzzle, 100, 20));
+    println!("Part 1: {}", part1(puzzle, 100, 2));
+    println!("Part 2: {}", part1(puzzle, 100, 20));
 }
 
 fn part1(input: &str, picoseconds_saved: usize, cheat_length: usize) -> usize {
@@ -34,13 +34,9 @@ fn part1(input: &str, picoseconds_saved: usize, cheat_length: usize) -> usize {
         let (row, col) = *position;
         let neighbors = adjacencies(row, col, grid.rows(), grid.cols(), cheat_length);
         neighbors.into_iter().filter(|neighbor| {
-            match path.get(&neighbor) {
+            match path.get(neighbor) {
                 Some(&d2) => {
-                    if d2 > d1 + 2 && d2 - (d1 + manhattan_distance(position, &neighbor)) >= picoseconds_saved {
-                        true
-                    } else {
-                        false
-                    }
+                    d2 > d1 + 2 && d2 - (d1 + manhattan_distance(position, neighbor)) >= picoseconds_saved
                 },
                 None => false
             }
@@ -54,13 +50,13 @@ fn manhattan_distance(p1: &(usize, usize), p2: &(usize, usize)) -> usize {
 
 fn adjacencies4(row: usize, col: usize, rows: usize, cols: usize, delta: usize) -> Vec<(usize, usize)> {
     let mut adj = vec![];
-    if 0 + delta <= row {
+    if delta <= row {
         adj.push((row-delta, col));
     }
     if row < rows - delta {
         adj.push((row+delta, col));
     }
-    if 0 + delta <= col {
+    if delta <= col {
         adj.push((row, col-delta));
     }
     if col < cols - delta {

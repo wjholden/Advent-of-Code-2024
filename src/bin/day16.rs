@@ -6,12 +6,12 @@ use pathfinding::prelude::astar_bag_collect;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day16.txt");
-    let result = part1(&puzzle).unwrap();
+    let result = solve(puzzle).unwrap();
     println!("Part 1: {}", result.0);
     println!("Part 2: {}", result.1);
 }
 
-fn part1(input: &str) -> Result<(i32, usize), ()> {
+fn solve(input: &str) -> Result<(i32, usize), ()> {
     let mut grid = grid![];
     for line in input.lines() {
         grid.push_row(line.chars().collect());
@@ -21,11 +21,11 @@ fn part1(input: &str) -> Result<(i32, usize), ()> {
     let (startr, startc) = (grid.rows() - 2, 1);
     let (endr, endc) = (1, grid.cols() - 2);
     let start = PD {
-        position: Complex::new(startr as i32, startc as i32),
+        position: Complex::new(startr as i32, startc),
         direction: Complex::new(0, 1), // start facing east
     };
     let successors = |pd: &PD| pd.successors(&grid);
-    let end = Complex::new(endr as i32, endc as i32);
+    let end = Complex::new(endr, endc as i32);
     let heuristic = |pd: &PD| (pd.position - end).l1_norm();
     //let heuristic = |_pd: &PD| 1; // this also works
     let success = |pd: &PD| pd.position == end;
@@ -113,16 +113,16 @@ mod day16 {
 
     #[test]
     fn test1() {
-        assert_eq!(part1(SAMPLE).unwrap().0, 7036)
+        assert_eq!(solve(SAMPLE).unwrap().0, 7036)
     }
  
     #[test]
     fn test2() {
-        assert_eq!(part1(SAMPLE).unwrap().1, 45)
+        assert_eq!(solve(SAMPLE).unwrap().1, 45)
     }   
 
     #[test]
     fn test3() {
-        assert_eq!(part1(SAMPLE2), Ok((11048, 64)))
+        assert_eq!(solve(SAMPLE2), Ok((11048, 64)))
     }
 }

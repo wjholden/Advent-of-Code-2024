@@ -4,12 +4,12 @@ use lazy_static::lazy_static;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day14.txt");
-    println!("Part 1: {}", part1(&puzzle, 101, 103)); // 229069152
-    println!("Part 2: {}", part2(&puzzle, 101, 103));
+    println!("Part 1: {}", part1(puzzle, 101, 103));
+    println!("Part 2: {}", part2(puzzle, 101, 103));
 }
 
 fn part1(input: &str, width: i16, height: i16) -> i64 {
-    let mut robots = input.trim().split('\n').map(|line| Robot::new(line)).collect_vec();
+    let mut robots = input.trim().split('\n').map(Robot::new).collect_vec();
     for _ in 0..100 {
         for robot in robots.iter_mut() {
             robot.tick(width, height);
@@ -19,7 +19,7 @@ fn part1(input: &str, width: i16, height: i16) -> i64 {
 }
 
 fn part2(input: &str, width: i16, height: i16) -> i16 {
-    let mut robots = input.trim().split('\n').map(|line| Robot::new(line)).collect_vec();
+    let mut robots = input.trim().split('\n').map(Robot::new).collect_vec();
     let mut i = 0;
     
     // The Christmas Tree appears when all of the robots have distinct positions.

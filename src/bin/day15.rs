@@ -6,8 +6,8 @@ use itertools::Itertools;
 
 fn main() {
     let puzzle = include_str!("../../puzzles/day15.txt");
-    println!("Part 1: {}", part1(&puzzle));
-    println!("Part 2: {}", part2(&puzzle));
+    println!("Part 1: {}", part1(puzzle));
+    println!("Part 2: {}", part2(puzzle));
 }
 
 fn part1(input: &str) -> usize {
@@ -187,6 +187,8 @@ impl WideWarehouse {
         }
     }
 
+    #[allow(clippy::type_complexity)] // I don't remember why I used such a
+    // complicated type, but it works and I'm not willing to change it now.
     fn shiftable(&self, dir: &Direction) -> Result<(Vec<(usize, usize)>, HashSet<(usize,usize)>), ()> {
         let mut frontier = VecDeque::new();
         let mut explored = HashSet::new();

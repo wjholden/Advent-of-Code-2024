@@ -5,8 +5,8 @@ use pathfinding::prelude::astar;
 
 fn main() -> Result<(), std::io::Error> {
     let puzzle = include_str!("../../puzzles/day24.txt");
-    println!("Part 1: {}", part1(&puzzle));
-    println!("Part 2: {} (solved manually with GraphViz; see file day24.dot)", part2(&puzzle)?);
+    println!("Part 1: {}", part1(puzzle));
+    println!("Part 2: {} (solved manually with GraphViz; see file day24.dot)", part2(puzzle)?);
     Ok(())
 }
 
@@ -366,7 +366,7 @@ impl Adder {
         let mut h = 0;
         for literal in self.gates.keys().rev() {
             if literal.starts_with("z") {
-                let got = self.eval(&literal, 48);
+                let got = self.eval(literal, 48);
                 //println!("{literal}: {got:?}");
                 if got != Ok(1) {
                     h += 1

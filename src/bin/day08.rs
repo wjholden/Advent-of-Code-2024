@@ -116,8 +116,6 @@ fn map(input: &str, antinodes: &HashSet<(i32,i32)>) -> String {
 
 #[cfg(test)]
 mod day08 {
-    use std::assert_eq;
-
     use super::*;
 
     const SAMPLE: &str = "............

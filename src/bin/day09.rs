@@ -27,14 +27,14 @@ impl fmt::Display for Block {
 }
 
 fn parse(input: &str) -> Disk {
-    input.trim().char_indices().map(|(index, blocks)| {
+    input.trim().char_indices().flat_map(|(index, blocks)| {
         let blocks = blocks.to_digit(10).unwrap();
         (0..blocks).map(move |_| match index % 2 {
             0 => Block::Data{id: index as u64 / 2},
             1 => Block::Empty,
-            _ => unreachable!("fault")
+            _ => unreachable!()
         })
-    }).flatten().collect()
+    }).collect()
 }
 
 fn checksum(disk: &[Block]) -> u64 {
@@ -56,11 +56,8 @@ fn part1(disk: &mut [Block]) -> u64 {
                 Block::Data{ id: _ } => left += 1
             }
         }
-        loop {
-            match disk[right] {
-                Block::Empty => right -= 1,
-                Block::Data{ id: _ } => break
-            }
+        while let Block::Empty = disk[right] {
+            right -= 1
         }
         if left == right {
             unreachable!("left and right should never match");
@@ -88,13 +85,13 @@ struct Free {
 struct Disk2 {
     files: Vec<File>,
     frees: Vec<Free>,
-    size: usize
+    _size: usize
 }
 
-impl ToString for Disk2 {
-    fn to_string(&self) -> String {
+impl fmt::Display for Disk2 {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut s = String::new();
-        for _ in 0..self.size {
+        for _ in 0..self._size {
             s.push('.');
         }
         for file in self.files.iter() {
@@ -102,7 +99,7 @@ impl ToString for Disk2 {
                 s.replace_range(i..i+1, &file.id.to_string());
             }
         }
-        s
+        write!(f, "{s}")
     }
 }
 
@@ -122,7 +119,7 @@ impl Disk2 {
             position += length;
         });
         let size = files.iter().map(|file| file.length).sum::<usize>() + frees.iter().map(|free| free.length).sum::<usize>();
-        Disk2{ files, frees, size }
+        Disk2{ files, frees, _size: size }
     }
 
     fn first_free(&self, file: &File) -> Option<usize> {
@@ -136,23 +133,20 @@ impl Disk2 {
 
     fn defrag(&mut self) {
         for i in (0..self.files.len()).rev() {
-            match self.first_free(&self.files[i]) {
-                Some(j) => {
-                    self.files[i].position = self.frees[j].position;
-                    if self.files[i].length < self.frees[j].length {
+            if let Some(j) = self.first_free(&self.files[i]) {
+                self.files[i].position = self.frees[j].position;
+                match self.files[i].length.cmp(&self.frees[j].length) {
+                    std::cmp::Ordering::Less => {
                         self.frees[j].position += self.files[i].length;
                         self.frees[j].length -= self.files[i].length;
-                    } else if self.files[i].length == self.frees[j].length {
+                    },
+                    std::cmp::Ordering::Equal => {
                         self.frees.remove(j);
-                    } else {
-                        unreachable!();
-                    }
-                    continue
-                },
-                None => {
-                    
+                    },
+                    std::cmp::Ordering::Greater => unreachable!(),
                 }
-            };
+                continue
+            }
         }
     }
 }
@@ -163,14 +157,12 @@ fn part2(input: &str) -> usize {
     disk.defrag();
     
     disk.files.into_iter().map(|file| {
-        (file.position..file.position+file.length).into_iter().sum::<usize>() * file.id
+        (file.position..file.position+file.length).sum::<usize>() * file.id
     }).sum()
 }
 
 #[cfg(test)]
 mod day09 {
-    use std::assert_eq;
-
     use super::*;
 
     const SAMPLE: &str = "2333133121414131402";
