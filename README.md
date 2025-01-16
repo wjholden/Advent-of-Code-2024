@@ -109,6 +109,7 @@ I solved day 24 by rendering the logic gates with GraphViz, learning how an adde
 and spot-the-difference troubleshooting.
 * You can reference named regex capture groups with square brackets (see day 3).
 * [Rust is very fast.](https://www.reddit.com/r/adventofcode/comments/1hrb4j6/2024rust_solving_aoc_2024_in_under_1ms_for_real/)
+* [Very very fast.](https://www.reddit.com/r/adventofcode/comments/1hlyocd/500_in_less_than_a_second/)
 
 # References
 
