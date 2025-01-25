@@ -5,13 +5,11 @@ fn main() {
 }
 
 fn part1(input: &str) -> usize {
-    0
+    todo!()
 }
 
 #[cfg(test)]
 mod day99 {
-    use std::assert_eq;
-
     use super::*;
 
     const SAMPLE: &str = "";
@@ -19,10 +17,5 @@ mod day99 {
     #[test]
     fn test1() {
         assert_eq!(part1(SAMPLE), 0)
-    }
- 
-    #[test]
-    fn test2() {
-        //assert_eq!(part2(SAMPLE), 0)
-    }   
+    }  
 }

@@ -1,3 +1,4 @@
+use core::panic;
 use std::{fs, iter::zip};
 
 fn main() {
@@ -21,7 +22,10 @@ fn is_pair_safe(slope: i32, x1: i32, x2: i32) -> bool {
 }
 
 fn is_row_safe(row: &[i32]) -> bool {
-    let slope = row.last().expect("last") - row.first().expect("first");
+    let [first, .., last] = row else {
+        panic!()
+    };
+    let slope = last - first;
     for (&x1,&x2) in zip(&row[0..row.len()-1], &row[1..]) {
         if !is_pair_safe(slope, x1, x2) {
             return false

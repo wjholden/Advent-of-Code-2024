@@ -94,7 +94,6 @@ fn part1(input: &str) -> (usize, usize) {
         }
     }
     
-    //println!("{}", map(input, &antinodes2));
     (antinodes.len(), antinodes2.len())
 }
 

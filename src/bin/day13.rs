@@ -5,9 +5,6 @@ fn main() {
     let puzzle = include_str!("../../puzzles/day13.txt");
     println!("Part 1: {}", part1(puzzle));
     println!("Part 2: {}", part2(puzzle, true));
-    // 159255020000000 too high
-    // 106320600510082.83 too high
-    // 102718967795500
 }
 
 fn part1(input: &str) -> f64 {
