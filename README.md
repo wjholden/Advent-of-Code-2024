@@ -110,6 +110,7 @@ and spot-the-difference troubleshooting.
 * You can reference named regex capture groups with square brackets (see day 3).
 * [Rust is very fast.](https://www.reddit.com/r/adventofcode/comments/1hrb4j6/2024rust_solving_aoc_2024_in_under_1ms_for_real/)
 * [Very very fast.](https://www.reddit.com/r/adventofcode/comments/1hlyocd/500_in_less_than_a_second/)
+* (Apparently [Julia is also very fast](https://www.reddit.com/r/adventofcode/comments/1i3bk9n/beating_the_rust_community_in_julia/)).
 
 # References
 
